@@ -122,7 +122,8 @@ export default function StoryStage({ ready }) {
         const dh = IMG_H * k;
         const x = (sw - dw) * VP_U + VP_U * dw;
         const y = (sh - dh) * 0.5 + VP_V * dh;
-        return { x, y, r: Math.hypot(Math.max(x, sw - x), Math.max(y, sh - y)) + 2 };
+        const diag = Math.hypot(sw, sh);
+        return { x, y, r: Math.max(Math.hypot(Math.max(x, sw - x), Math.max(y, sh - y)) + 80, diag * 1.4) };
       };
       const origin = () => `${vp().x}px ${vp().y}px`;
       const setVpVars = () => {
@@ -223,7 +224,9 @@ export default function StoryStage({ ready }) {
         { clipPath: () => { const v = vp(); return `circle(0px at ${v.x}px ${v.y}px)`; } },
         { clipPath: () => { const v = vp(); return `circle(${v.r}px at ${v.x}px ${v.y}px)`; }, duration: 0.7, ease: "power2.in" },
         W - 0.35
-      );
+      )
+        .set(q("[data-curtain]"), { clipPath: "none" }, W + 0.35)
+        .set(q("[data-intro-bg]"), { autoAlpha: 0 }, W + 0.35);
 
       /* A — intro → hero (shifted by W so the walk-in plays first) */
       tl.fromTo(

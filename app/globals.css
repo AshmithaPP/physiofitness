@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Physiofit Studio — design tokens
+   Change the two brand values below and the whole site follows.
+   Every other colour is derived from them (tints / transparency only).
+   ========================================================================== */
+
+:root {
+  --brand-primary: #fafaf9;
+  --brand-secondary: #064e3b;
+
+  /* derived — mixes of the two brand colours only */
+  --brand-secondary-soft: color-mix(in oklch, var(--brand-secondary) 72%, var(--brand-primary));
+  --brand-mist: color-mix(in oklch, var(--brand-secondary) 6%, var(--brand-primary));
+  --brand-line: color-mix(in oklch, var(--brand-secondary) 14%, transparent);
+  --brand-line-inverse: color-mix(in oklch, var(--brand-primary) 22%, transparent);
+
+  /* motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* layout */
+  --gutter: clamp(1rem, 4vw, 3.5rem);
+}
+
+@theme inline {
+  /* colours → bg-primary, text-secondary, border-line, bg-secondary/20 … */
+  --color-primary: var(--brand-primary);
+  --color-secondary: var(--brand-secondary);
+  --color-secondary-soft: var(--brand-secondary-soft);
+  --color-mist: var(--brand-mist);
+  --color-line: var(--brand-line);
+  --color-line-inverse: var(--brand-line-inverse);
+
+  /* fonts → font-display, font-sans (variables injected by next/font) */
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+  /* fluid type scale → text-display, text-h1 … */
+  --text-mega: clamp(4.5rem, 17vw, 15rem);
+  --text-mega--line-height: 0.82;
+  --text-mega--letter-spacing: -0.035em;
+
+  --text-giant: clamp(3.75rem, 11vw, 11rem);
+  --text-giant--line-height: 0.9;
+  --text-giant--letter-spacing: -0.045em;
+
+  --text-display: clamp(3.25rem, 9vw, 8.5rem);
+  --text-display--line-height: 0.9;
+  --text-display--letter-spacing: -0.03em;
+
+  --text-h1: clamp(2.25rem, 3.6vw, 3.75rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.02em;
+
+  --text-h2: clamp(2rem, 4.2vw, 4.25rem);
+  --text-h2--line-height: 1;
+  --text-h2--letter-spacing: -0.035em;
+
+  --text-lead: clamp(1rem, 1.15vw, 1.125rem);
+  --text-lead--line-height: 1.65;
+
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.16em;
+
+  --ease-expo: var(--ease-out-expo);
+  --ease-quart: var(--ease-in-out-quart);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  background: var(--brand-primary);
+  color: var(--brand-secondary);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* elements GSAP reveals on load — hidden only when scripting is available */
+@media (scripting: enabled) {
+  [data-reveal],
+  [data-nav-item],
+  [data-nav-logo] {
+    visibility: hidden;
+  }
+}
+
+body {
+  background: var(--brand-primary);
+  color: var(--brand-secondary);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--brand-secondary);
+  color: var(--brand-primary);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   Type patterns
+   ========================================================================== */
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-eyebrow);
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* lighter-weight accent for the second half of a headline */
+@utility italic-accent {
+  font-family: var(--font-display);
+  font-weight: 300;
+}
+
+@utility serif {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+/* line masks for reveal animations */
+@utility mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+@utility btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  height: 3.25rem;
+  padding-inline: 1.6rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  overflow: hidden;
+  transition: color 0.5s var(--ease-out-expo), border-color 0.5s var(--ease-out-expo);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    transform: translateY(101%);
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+
+  &:hover::before {
+    transform: translateY(0);
+  }
+}
+
+@utility btn-primary {
+  background: var(--brand-secondary);
+  color: var(--brand-primary);
+
+  &::before {
+    background: var(--brand-secondary-soft);
+  }
+}
+
+@utility btn-ghost {
+  border: 1px solid var(--brand-line);
+  color: var(--brand-secondary);
+
+  &::before {
+    background: var(--brand-secondary);
+  }
+
+  &:hover {
+    color: var(--brand-primary);
+    border-color: var(--brand-secondary);
+  }
+}
+
+@utility btn-light {
+  background: var(--brand-primary);
+  color: var(--brand-secondary);
+
+  &::before {
+    background: var(--brand-mist);
+  }
+}
+
+/* ==========================================================================
+   Motion helpers
+   ========================================================================== */
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(8deg); }
+}
+
+@keyframes scroll-cue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+@utility animate-pulse-ring {
+  animation: pulse-ring 1.8s var(--ease-out-expo) infinite;
+}
+
+@utility animate-float {
+  animation: float-y 7s ease-in-out infinite;
+}
+
+@utility animate-scroll-cue {
+  animation: scroll-cue 1.8s var(--ease-in-out-quart) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

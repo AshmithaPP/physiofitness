@@ -131,8 +131,7 @@ export default function Approach({ ready = true }) {
       {/* steps panel */}
       <div className="absolute inset-0 z-20 flex items-end px-[var(--gutter)] pb-[6svh] lg:items-center lg:pb-0 lg:pt-16">
         <div className="w-full max-w-[38rem]">
-          <p data-ap-fade className="eyebrow invisible mb-4 flex items-center gap-3 text-primary/70 lg:mb-6">
-            <span className="h-px w-8 bg-current" />
+          <p data-ap-fade className="eyebrow invisible mb-4 text-primary/70 lg:mb-6">
             Approach
           </p>
           <h2 id="approach-title" className="font-display text-[clamp(2rem,4.2vw,4rem)] font-medium leading-[1.02] tracking-[-0.035em]">
@@ -142,9 +141,8 @@ export default function Approach({ ready = true }) {
 
           <ol className="mt-7 grid grid-cols-2 gap-x-5 gap-y-5 sm:gap-x-8 lg:mt-12 lg:gap-y-8">
             {STEPS.map((s) => (
-              <li key={s.n} data-ap-step className="invisible border-t border-primary/25 pt-3 lg:pt-4">
-                <span className="font-mono text-[0.7rem] text-primary/60">{s.n}</span>
-                <h3 className="mt-1 font-display text-lg font-medium tracking-[-0.02em] lg:mt-2 lg:text-2xl">{s.title}</h3>
+              <li key={s.title} data-ap-step className="invisible border-t border-primary/25 pt-3 lg:pt-4">
+                <h3 className="font-display text-lg font-medium tracking-[-0.02em] lg:text-2xl">{s.title}</h3>
                 <p className="mt-1.5 text-xs leading-relaxed text-primary/70 sm:text-sm lg:mt-2">{s.body}</p>
               </li>
             ))}

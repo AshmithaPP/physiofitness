@@ -206,9 +206,6 @@ export default function StoryStage({ ready }) {
       }, 0);
       if (!reduced) {
         tl.fromTo(q("[data-intro-bg]"), { scale: 1, transformOrigin: origin }, { scale: 2.6, transformOrigin: origin, duration: W + 0.3, ease: "power2.in" }, 0)
-          .fromTo(q("[data-walk-fg]"), { scale: 1, xPercent: 0, transformOrigin: origin }, { scale: 1.55, xPercent: -14, transformOrigin: origin, duration: W + 0.25, ease: "power2.in" }, 0)
-          .fromTo(q("[data-walk-ceil]"), { scale: 1, yPercent: 0, transformOrigin: origin }, { scale: 1.3, yPercent: -12, transformOrigin: origin, duration: W + 0.25, ease: "power2.in" }, 0)
-          .fromTo(q("[data-walk-blur]"), { opacity: 0 }, { opacity: 1, duration: W, ease: "power1.in" }, 0.2)
           .fromTo(q("[data-walk-tint]"), { opacity: 1 }, { opacity: 0.4, duration: W, ease: "none" }, 0);
       }
       tl.fromTo(
@@ -319,38 +316,6 @@ export default function StoryStage({ ready }) {
             sizes="100vw"
             className="object-cover object-[63%_50%]"
           />
-          {/* walk-in depth layers: copies of the same photo, so at rest they
-              line up exactly with the base and are invisible */}
-          <div
-            data-walk-blur
-            className="absolute inset-0 opacity-0 blur-[10px] max-sm:blur-[6px]"
-            style={{
-              maskImage: "radial-gradient(circle at var(--vpx, 63%) var(--vpy, 45%), transparent 16%, black 58%)",
-              WebkitMaskImage: "radial-gradient(circle at var(--vpx, 63%) var(--vpy, 45%), transparent 16%, black 58%)",
-            }}
-          >
-            <Image src="/images/hero/sustain.jpg" alt="" fill sizes="100vw" className="object-cover object-[63%_50%]" />
-          </div>
-          <div
-            data-walk-ceil
-            className="absolute inset-0 hidden will-change-transform sm:block"
-            style={{
-              maskImage: "linear-gradient(to bottom, black 0%, black 12%, transparent 26%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 12%, transparent 26%)",
-            }}
-          >
-            <Image src="/images/hero/sustain.jpg" alt="" fill sizes="100vw" className="object-cover object-[63%_50%]" />
-          </div>
-          <div
-            data-walk-fg
-            className="absolute inset-0 will-change-transform"
-            style={{
-              maskImage: "linear-gradient(100deg, black 34%, transparent 56%)",
-              WebkitMaskImage: "linear-gradient(100deg, black 34%, transparent 56%)",
-            }}
-          >
-            <Image src="/images/hero/sustain.jpg" alt="" fill sizes="100vw" className="object-cover object-[63%_50%]" />
-          </div>
         </div>
         {/* brand tint keeps the photo in the green palette, easing off as you walk in */}
         <div data-walk-tint className="absolute inset-0">
@@ -370,25 +335,20 @@ export default function StoryStage({ ready }) {
       {/* ================= HERO ================= */}
       <div data-reveal className="pointer-events-none absolute inset-0 z-30">
         {/* copy on the left, photo on the right (photo first, on top, on phones) */}
-        <div className="mx-auto flex h-full max-w-[110rem] flex-col gap-[3svh] px-[var(--gutter)] pb-[4svh] pt-[calc(4.5rem+3svh)] md:flex-row md:items-center md:gap-[5vw] md:pb-0 md:pt-20">
+        <div className="mx-auto flex h-full max-w-[110rem] flex-col items-center justify-center gap-3.5 px-[var(--gutter)] pb-6 pt-16 sm:gap-[2.5svh] sm:pb-[4svh] sm:pt-[calc(4.5rem+2svh)] md:flex-row md:items-center md:justify-between md:gap-[5vw] md:pb-0 md:pt-20">
           {/* landing box for the travelling photo */}
           <div className="order-1 flex shrink-0 justify-center md:order-2 md:flex-1 md:justify-end">
             <div
               data-slot-hero
-              className="aspect-[3/4] h-[clamp(9rem,25svh,15rem)] md:h-[min(60svh,40vw)] lg:h-[min(68svh,40vw)]"
+              className="aspect-[3/4] h-[clamp(9rem,23svh,14.5rem)] sm:h-[clamp(10rem,28svh,18rem)] md:h-[min(68svh,44vw)] lg:h-[min(76svh,46vw)]"
             />
           </div>
 
           <div
             data-hero-col
-            className="pointer-events-auto order-2 flex min-h-0 flex-col md:order-1 md:w-[min(48rem,56%)]"
+            className="pointer-events-auto order-2 flex min-h-0 flex-col items-center text-center md:items-start md:text-left md:order-1 md:w-[min(48rem,55%)]"
           >
-            <p data-hero-fade className="eyebrow flex items-center gap-3 text-[0.625rem] text-primary/70">
-              <span className="h-px w-8 bg-current" />
-              Physiofit Studio · Chennai
-            </p>
-
-            <h1 className="mt-3 font-display text-[clamp(1.9rem,min(4.6vw,8svh),4.75rem)] font-medium leading-[1.04] tracking-[-0.035em] md:mt-5">
+            <h1 className="font-display text-[clamp(1.6rem,min(5vw,6.8svh),4.25rem)] font-medium leading-[1.05] tracking-[-0.035em] md:mt-2">
               <span className="mask-line"><span data-hero-line className="block">Restore your health,</span></span>
               <span className="mask-line"><span data-hero-line className="block font-light text-primary/65">rebuild your strength,</span></span>
               <span className="mask-line"><span data-hero-line className="block">renew your life.</span></span>
@@ -396,34 +356,33 @@ export default function StoryStage({ ready }) {
 
             <p
               data-hero-fade
-              className="mt-3 max-w-[34rem] text-sm leading-relaxed text-primary/70 md:mt-5 md:text-base lg:text-lead [@media(max-height:700px)]:hidden"
+              className="mt-2.5 max-w-[32rem] text-xs leading-relaxed text-primary/75 sm:mt-3 sm:text-sm md:mt-4 md:text-base lg:text-lead [@media(max-height:700px)]:hidden"
             >
               A modern clinical studio in T. Nagar combining physiotherapy, targeted rehab, functional
               fitness and restorative foot spa — all under one roof.
             </p>
 
-            <div data-hero-fade className="mt-5 flex flex-wrap items-center gap-3 md:mt-7">
+            <div data-hero-fade className="mt-3.5 flex w-full max-w-xs flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center sm:justify-center md:justify-start md:gap-3.5 md:mt-6">
               <Magnetic>
-                <Link href="/book" className="btn btn-light h-11 px-5 text-sm md:h-12 md:px-6">
+                <Link href="/book" className="btn btn-light h-11 w-full px-5 text-sm font-medium sm:h-12 sm:w-auto sm:px-6 md:h-13 md:px-7 md:text-base">
                   Book an appointment
-                  <span aria-hidden className="text-base leading-none">↗</span>
                 </Link>
               </Magnetic>
               <Magnetic>
                 <Link
                   href="/services"
-                  className="btn h-11 border border-line-inverse px-5 text-sm text-primary before:bg-primary hover:text-secondary md:h-12 md:px-6"
+                  className="btn h-11 w-full border border-line-inverse px-5 text-sm font-medium text-primary before:bg-primary hover:text-secondary sm:h-12 sm:w-auto sm:px-6 md:h-13 md:px-7 md:text-base"
                 >
                   Explore services
                 </Link>
               </Magnetic>
             </div>
 
-            <dl data-hero-fade className="mt-6 grid max-w-[30rem] grid-cols-3 gap-4 border-t border-line-inverse pt-4 md:mt-9 md:pt-6">
+            <dl data-hero-fade className="mt-4 grid w-full max-w-xs grid-cols-3 gap-2 border-t border-line-inverse pt-3 sm:max-w-sm sm:gap-4 sm:pt-4 md:max-w-[30rem] md:mt-7 md:pt-5">
               {STATS.map((s) => (
-                <div key={s.label} className="flex flex-col-reverse">
-                  <dt className="eyebrow mt-1.5 text-[0.55rem] text-primary/60 md:mt-2 md:text-[0.6rem]">{s.label}</dt>
-                  <dd className="font-display text-[clamp(1.5rem,2.4vw,2.25rem)] font-medium leading-none tracking-[-0.03em]">
+                <div key={s.label} className="flex flex-col-reverse text-center md:text-left">
+                  <dt className="eyebrow mt-1 text-[0.48rem] whitespace-nowrap text-primary/60 sm:text-[0.55rem] md:mt-1.5 md:text-[0.6rem]">{s.label}</dt>
+                  <dd className="font-display text-[clamp(1.2rem,4vw,2.15rem)] font-medium leading-none tracking-[-0.03em]">
                     {s.value}
                   </dd>
                 </div>
@@ -484,11 +443,10 @@ export default function StoryStage({ ready }) {
 
       {/* ================= STEPS ================= */}
       <div data-reveal className="pointer-events-none absolute inset-0 z-50">
-        <div className="mx-auto grid h-full max-w-[110rem] grid-rows-[auto_1fr] gap-6 px-[var(--gutter)] pb-8 pt-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-1 lg:items-center lg:gap-16 lg:pb-0 lg:pt-20">
+        <div className="mx-auto grid h-full max-w-[110rem] grid-rows-[auto_1fr] gap-4 px-[var(--gutter)] pb-6 pt-20 sm:gap-6 sm:pb-8 sm:pt-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-1 lg:items-center lg:gap-16 lg:pb-0 lg:pt-20">
           {/* copy */}
-          <div className="order-2 flex flex-col lg:order-1">
-            <p data-steps-in className="eyebrow mb-6 flex items-center gap-3 text-primary/70 lg:mb-10">
-              <span className="h-px w-8 bg-current" />
+          <div className="order-2 flex flex-col justify-center lg:order-1">
+            <p data-steps-in className="eyebrow mb-2 sm:mb-4 text-primary/70 lg:mb-8">
               The Physiofit method
             </p>
 
@@ -505,27 +463,27 @@ export default function StoryStage({ ready }) {
               ))}
             </div>
 
-            <div className="mt-5 grid max-w-md lg:mt-7">
+            <div className="mt-3 grid max-w-md sm:mt-5 lg:mt-7">
               {STEPS.map((s, i) => (
-                <p key={s.key} data-body={i} className="invisible text-lead text-primary/75 [grid-area:1/1]">
+                <p key={s.key} data-body={i} className="invisible text-sm text-primary/75 sm:text-base lg:text-lead [grid-area:1/1]">
                   {s.body}
                 </p>
               ))}
             </div>
 
-            <div data-steps-in className="mt-8 w-full max-w-md lg:mt-12">
-              <div className="relative h-6">
-                <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-primary/20" />
-                <div data-fill className="absolute inset-x-0 top-1/2 h-px origin-left -translate-y-1/2 bg-primary" />
+            <div data-steps-in className="mt-5 w-full max-w-sm sm:max-w-md sm:mt-8 lg:max-w-lg lg:mt-12">
+              <div className="relative h-8">
+                <div className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-primary/25" />
+                <div data-fill className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 rounded-full bg-primary" />
                 <span
                   data-knob
                   aria-hidden
-                  className="absolute left-0 top-1/2 h-4 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_6px] shadow-primary/15"
+                  className="absolute left-0 top-1/2 h-5 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_7px] shadow-primary/20 sm:h-5.5 sm:w-12"
                 />
               </div>
-              <ol className="mt-3 flex justify-between">
+              <ol className="mt-3.5 flex justify-between">
                 {STEPS.map((s, i) => (
-                  <li key={s.key} data-label={i} className="eyebrow text-[0.58rem]">
+                  <li key={s.key} data-label={i} className="eyebrow text-[0.6875rem] font-medium tracking-[0.12em] sm:text-xs">
                     {s.key}
                   </li>
                 ))}
@@ -535,28 +493,28 @@ export default function StoryStage({ ready }) {
 
           {/* landing box for the photo */}
           <div className="relative order-1 flex min-h-0 items-center justify-center lg:order-2 lg:h-full">
-            <div data-slot-steps className="relative aspect-[4/3] h-[30svh] max-w-full lg:aspect-[5/6] lg:h-[72svh]" />
+            <div data-slot-steps className="relative aspect-[4/3] h-[24svh] max-w-full sm:h-[30svh] lg:aspect-[5/6] lg:h-[72svh]" />
           </div>
         </div>
       </div>
 
       {/* ================= INTRO: centred logo ================= */}
-      <div data-reveal className="pointer-events-none absolute inset-0 z-[60] flex flex-col items-center justify-center px-6 text-center">
-        <p data-intro-fade className="mb-6 md:mb-8">
-          <span data-intro-in className="eyebrow block text-primary/85">Physiotherapy · Rehab · Fitness</span>
+      <div data-reveal className="pointer-events-none absolute inset-0 z-[60] flex flex-col items-center justify-center px-6 text-center select-text selection:bg-primary selection:text-secondary">
+        <p data-intro-fade className="pointer-events-auto mb-4 cursor-text select-text md:mb-5">
+          <span data-intro-in className="eyebrow block text-[0.625rem] text-primary/85 sm:text-xs">Physiotherapy · Rehab · Fitness</span>
         </p>
-        <div data-fly-logo className="origin-center will-change-transform">
-          <Wordmark className="text-[clamp(3.5rem,12vw,10.5rem)]" />
+        <div data-fly-logo className="pointer-events-auto origin-center cursor-text select-text will-change-transform">
+          <Wordmark className="text-[clamp(2.25rem,6vw,4.75rem)]" />
         </div>
-        <p data-intro-fade className="mt-6 md:mt-8">
-          <span data-intro-in className="block text-base text-primary/80 md:text-lg">
+        <p data-intro-fade className="pointer-events-auto mt-4 cursor-text select-text md:mt-5">
+          <span data-intro-in className="block text-sm font-light text-primary/80 sm:text-base">
             Restore · Rebuild · Renew
           </span>
         </p>
 
-        <div data-intro-fade className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-3 md:bottom-10">
-          <span data-intro-in className="eyebrow block text-[0.6rem] text-primary/80">Scroll to explore</span>
-          <span data-intro-in className="relative block h-12 w-px overflow-hidden bg-primary/25">
+        <div data-intro-fade className="pointer-events-auto absolute inset-x-0 bottom-6 flex cursor-text flex-col items-center gap-2.5 select-text md:bottom-8">
+          <span data-intro-in className="eyebrow block text-[0.55rem] text-primary/80 sm:text-[0.6rem]">Scroll to explore</span>
+          <span data-intro-in className="relative block h-10 w-px overflow-hidden bg-primary/25 sm:h-12">
             <span className="animate-scroll-cue absolute inset-x-0 top-0 h-1/2 bg-primary" />
           </span>
         </div>

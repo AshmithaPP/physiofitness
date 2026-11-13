@@ -33,9 +33,10 @@
   --color-line: var(--brand-line);
   --color-line-inverse: var(--brand-line-inverse);
 
-  /* fonts → font-display, font-sans (variables injected by next/font) */
-  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  /* fonts → Roboto font only */
+  --font-roboto: var(--font-roboto), "Roboto", sans-serif;
+  --font-display: var(--font-roboto), "Roboto", sans-serif;
+  --font-sans: var(--font-roboto), "Roboto", sans-serif;
 
   /* fluid type scale → text-display, text-h1 … */
   --text-mega: clamp(4.5rem, 17vw, 15rem);
@@ -91,7 +92,7 @@ html {
 body {
   background: var(--brand-primary);
   color: var(--brand-secondary);
-  font-family: var(--font-sans);
+  font-family: var(--font-roboto), "Roboto", sans-serif;
   overflow-x: clip;
 }
 
@@ -111,7 +112,7 @@ body {
    ========================================================================== */
 
 @utility eyebrow {
-  font-family: var(--font-sans);
+  font-family: var(--font-roboto), "Roboto", sans-serif;
   font-size: var(--text-eyebrow);
   line-height: 1;
   letter-spacing: 0.16em;
@@ -121,12 +122,12 @@ body {
 
 /* lighter-weight accent for the second half of a headline */
 @utility italic-accent {
-  font-family: var(--font-display);
+  font-family: var(--font-roboto), "Roboto", sans-serif;
   font-weight: 300;
 }
 
 @utility serif {
-  font-family: var(--font-display);
+  font-family: var(--font-roboto), "Roboto", sans-serif;
   font-weight: 500;
 }
 

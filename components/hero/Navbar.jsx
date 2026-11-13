@@ -33,19 +33,13 @@ export default function Navbar() {
           .set(menu.current, { display: "flex" })
           .fromTo(
             menu.current,
-            { clipPath: "inset(0% 0% 100% 0%)" },
-            { clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "expo.inOut" }
-          )
-          .fromTo(
-            "[data-menu-link]",
-            { yPercent: 110 },
-            { yPercent: 0, stagger: 0.06, duration: 1 },
-            "-=0.35"
+            { opacity: 0, y: -14, scale: 0.97 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "power3.out" }
           );
       } else if (menu.current && menu.current.style.display === "flex") {
         lenis?.start();
         gsap.timeline()
-          .to(menu.current, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.7, ease: "expo.inOut" })
+          .to(menu.current, { opacity: 0, y: -10, scale: 0.97, duration: 0.22, ease: "power2.in" })
           .set(menu.current, { display: "none" });
       }
     },
@@ -71,7 +65,7 @@ export default function Navbar() {
               <Link
                 href={l.href}
                 aria-current={i === 0 ? "page" : undefined}
-                className="eyebrow block rounded-full border border-transparent px-4 py-2.5 text-[0.625rem] transition-colors duration-500 hover:border-line-inverse aria-[current=page]:border-primary/60"
+                className="eyebrow block rounded-full border border-transparent px-3.5 py-1.5 text-xs transition-colors duration-500 hover:border-line-inverse aria-[current=page]:border-primary/60"
               >
                 {l.label}
               </Link>
@@ -82,59 +76,66 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <span data-nav-item className="hidden sm:inline-block">
             <Magnetic>
-              <Link href="/book" className="btn btn-light h-11 px-5 text-xs">
+              <Link href="/book" className="btn btn-light h-10 px-5 text-xs font-medium md:h-11 md:px-5 md:text-sm">
                 Book appointment
-                <span aria-hidden className="text-base leading-none">↗</span>
               </Link>
             </Magnetic>
           </span>
 
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={open ? "Close menu" : "Open menu"}
-            className="relative z-10 grid size-11 place-items-center rounded-full border border-line-inverse lg:hidden"
-          >
-            <span className="relative block h-3 w-5">
-              <span
-                className={`absolute left-0 top-0 h-px w-full bg-current transition-transform duration-500 ease-expo ${open ? "translate-y-1.5 rotate-45" : ""}`}
-              />
-              <span
-                className={`absolute bottom-0 left-0 h-px w-full bg-current transition-transform duration-500 ease-expo ${open ? "-translate-y-1.5 -rotate-45" : ""}`}
-              />
-            </span>
-          </button>
+          <span data-nav-item className="inline-block lg:hidden">
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? "Close menu" : "Open menu"}
+              className="relative z-50 grid size-9 place-items-center rounded-full border border-primary/20 bg-primary/10 text-primary backdrop-blur-md transition-all duration-300 hover:border-primary/40 hover:bg-primary/15 active:scale-95"
+            >
+              <span className="relative flex h-3.5 w-4 flex-col justify-between items-center">
+                <span
+                  className={`h-[1.5px] w-full rounded-full bg-current transition-all duration-300 ease-expo ${open ? "translate-y-[6.25px] rotate-45" : ""}`}
+                />
+                <span
+                  className={`h-[1.5px] w-full rounded-full bg-current transition-all duration-200 ease-expo ${open ? "opacity-0 scale-x-0" : "opacity-100"}`}
+                />
+                <span
+                  className={`h-[1.5px] w-full rounded-full bg-current transition-all duration-300 ease-expo ${open ? "-translate-y-[6.25px] -rotate-45" : ""}`}
+                />
+              </span>
+            </button>
+          </span>
         </div>
       </nav>
     </header>
 
-      {/* mobile menu — kept outside the (transformed) header so `fixed` stays viewport-relative */}
+      {/* mobile menu backdrop */}
+      {open && (
+        <div
+          aria-hidden
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden"
+        />
+      )}
+
+      {/* mobile menu compact floating card */}
       <div
         id="mobile-menu"
         ref={menu}
-        className="fixed inset-0 z-30 hidden flex-col justify-end bg-secondary px-[var(--gutter)] pb-12 pt-28 text-primary lg:hidden"
+        className="fixed inset-x-[var(--gutter)] top-[calc(3.5rem+1.25rem)] z-40 mx-auto hidden max-w-sm flex-col rounded-3xl border border-primary/20 bg-secondary/95 p-3 text-primary shadow-[0_25px_60px_-15px] shadow-black/60 backdrop-blur-2xl lg:hidden"
       >
         <ul className="flex flex-col gap-1">
           {[...LINKS, { label: "Book appointment", href: "/book" }].map((l) => (
-            <li key={l.href} className="mask-line">
+            <li key={l.href}>
               <Link
                 href={l.href}
-                data-menu-link
                 onClick={() => setOpen(false)}
-                className="block font-display text-[clamp(2.75rem,12vw,4.5rem)] leading-[1.05] tracking-[-0.02em]"
+                className="block rounded-2xl px-4 py-2.5 text-base font-medium text-primary/90 transition-all hover:bg-primary/10 hover:text-primary active:bg-primary/15"
               >
                 {l.label}
               </Link>
             </li>
           ))}
         </ul>
-        <div className="mt-10 flex flex-col gap-1 border-t border-line-inverse pt-6 text-sm text-primary/70">
-          <a href="tel:+917200831203">+91 72008 31203</a>
-          <span>New No. 128, N Usman Road, T. Nagar, Chennai</span>
-          <span>Open 7 days · 10:00 AM – 7:00 PM</span>
-        </div>
       </div>
     </div>
   );

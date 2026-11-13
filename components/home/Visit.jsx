@@ -85,8 +85,7 @@ export default function Visit({ ready = true }) {
       <div className="mx-auto grid max-w-[110rem] items-center gap-10 px-[var(--gutter)] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
         {/* copy + details */}
         <div>
-          <p data-v-fade className="eyebrow flex items-center gap-3 text-[0.625rem] text-secondary/60">
-            <span className="h-px w-8 bg-current" />
+          <p data-v-fade className="eyebrow text-[0.625rem] text-secondary/60">
             Visit us
           </p>
           <h2

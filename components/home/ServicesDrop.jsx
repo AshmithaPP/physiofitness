@@ -66,6 +66,14 @@ export default function ServicesDrop({ ready = true }) {
       const pieces = q("[data-piece]");
       const spins = pieces.map(() => gsap.utils.random(-120, 120, 1));
       const above = (el) => -(el.offsetTop + el.offsetHeight + 80);
+      const isMobile = () => typeof window !== "undefined" && window.innerWidth < 1024;
+
+      const setPinSpacerBg = () => {
+        if (stage.parentElement?.classList.contains("pin-spacer")) {
+          stage.parentElement.style.backgroundColor = "var(--brand-primary)";
+        }
+      };
+      setPinSpacerBg();
 
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
@@ -77,17 +85,32 @@ export default function ServicesDrop({ ready = true }) {
           scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onRefresh: setPinSpacerBg,
         },
       });
 
-      tl.fromTo(q("[data-drop-pill]"), { autoAlpha: 0, y: -16 }, { autoAlpha: 1, y: 0, duration: 0.4 }, 0)
+      tl.fromTo(
+        q("[data-drop-pill]"),
+        { autoAlpha: () => (isMobile() ? 1 : 0), y: () => (isMobile() ? 0 : -16) },
+        { autoAlpha: 1, y: 0, duration: 0.4 },
+        0
+      )
         .fromTo(
           q("[data-drop-center]"),
-          { yPercent: 25, scale: 0.82, autoAlpha: 0 },
+          {
+            yPercent: () => (isMobile() ? 0 : 25),
+            scale: () => (isMobile() ? 1 : 0.82),
+            autoAlpha: 1,
+          },
           { yPercent: 0, scale: 1, autoAlpha: 1, duration: 1 },
           0
         )
-        .fromTo(q("[data-drop-center] [data-zoom]"), { scale: 1.35 }, { scale: 1, duration: 1.2 }, 0);
+        .fromTo(
+          q("[data-drop-center] [data-zoom]"),
+          { scale: () => (isMobile() ? 1.08 : 1.35) },
+          { scale: 1, duration: 1.2 },
+          0
+        );
 
       // the fall — staggered, alternating sides, with a landing bounce
       const order = [0, 2, 1, 3, 4, 6, 5, 7].filter((i) => i < pieces.length);
@@ -112,7 +135,8 @@ export default function ServicesDrop({ ready = true }) {
     <section
       ref={root}
       aria-labelledby="services-title"
-      className="relative h-svh w-full overflow-hidden bg-primary text-secondary"
+      data-stage-primary
+      className="relative h-dvh min-h-[100dvh] w-full overflow-hidden bg-primary text-secondary"
     >
       {/* soft floor shadow so the piles feel grounded */}
       <div

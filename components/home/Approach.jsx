@@ -64,6 +64,13 @@ export default function Approach({ ready = true }) {
 
       gsap.set(q("[data-arch]"), { clipPath: arch });
 
+      const setPinSpacerBg = () => {
+        if (stage.parentElement?.classList.contains("pin-spacer")) {
+          stage.parentElement.style.backgroundColor = "var(--brand-secondary)";
+        }
+      };
+      setPinSpacerBg();
+
       const tl = gsap.timeline({
         defaults: { ease: "power3.inOut" },
         scrollTrigger: {
@@ -74,6 +81,7 @@ export default function Approach({ ready = true }) {
           scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onRefresh: setPinSpacerBg,
         },
       });
 
@@ -95,7 +103,8 @@ export default function Approach({ ready = true }) {
     <section
       ref={root}
       aria-labelledby="approach-title"
-      className="relative h-svh w-full overflow-hidden bg-secondary text-primary"
+      data-stage-secondary
+      className="relative h-dvh min-h-[100dvh] w-full overflow-hidden bg-secondary text-primary"
     >
       {/* title above the arch */}
       <div data-arch-title className="absolute inset-x-0 top-[12svh] z-10 px-[var(--gutter)] text-center lg:top-[13svh]">

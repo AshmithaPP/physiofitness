@@ -26,7 +26,7 @@ export default function Hero() {
   return (
     <>
       <Navbar />
-      <main>
+      <main className="bg-secondary">
         <StoryStage ready={ready} />
         <ServicesDrop ready={ready} />
         <Approach ready={ready} />

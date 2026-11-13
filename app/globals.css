@@ -89,6 +89,39 @@ html {
   }
 }
 
+/* ==========================================================================
+   Mobile Pinned Stage Viewport & Background Fill
+   Ensures collapsing mobile browser bars never expose a white gap on scroll.
+   ========================================================================== */
+
+[data-stage-secondary] {
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  background-color: var(--brand-secondary) !important;
+}
+
+.pin-spacer:has(> [data-stage-secondary]) {
+  background-color: var(--brand-secondary) !important;
+}
+
+.pin-spacer > [data-stage-secondary] {
+  bottom: 0 !important;
+}
+
+[data-stage-primary] {
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  background-color: var(--brand-primary) !important;
+}
+
+.pin-spacer:has(> [data-stage-primary]) {
+  background-color: var(--brand-primary) !important;
+}
+
+.pin-spacer > [data-stage-primary] {
+  bottom: 0 !important;
+}
+
 body {
   background: var(--brand-primary);
   color: var(--brand-secondary);

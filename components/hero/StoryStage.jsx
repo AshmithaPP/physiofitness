@@ -157,6 +157,13 @@ export default function StoryStage({ ready }) {
       gsap.set(q("[data-label]"), { opacity: 0.4 });
       gsap.set(q('[data-label="0"]'), { opacity: 1 });
 
+      const setPinSpacerBg = () => {
+        if (stage.parentElement?.classList.contains("pin-spacer")) {
+          stage.parentElement.style.backgroundColor = "var(--brand-secondary)";
+        }
+      };
+      setPinSpacerBg();
+
       /* ---------- master scroll timeline ---------- */
       const W = 0.8; // extra timeline (most of a screen of scroll) for the walk-in
       const tl = gsap.timeline({
@@ -175,7 +182,10 @@ export default function StoryStage({ ready }) {
             delay: 0.1,
             ease: "power2.inOut",
           },
-          onRefresh: setVpVars,
+          onRefresh: () => {
+            setVpVars();
+            setPinSpacerBg();
+          },
           onLeave: () => navBar?.classList.add("is-scrolled"),
           onEnterBack: () => navBar?.classList.remove("is-scrolled"),
         },
@@ -303,7 +313,8 @@ export default function StoryStage({ ready }) {
     <section
       ref={root}
       aria-label="Physiofit Studio"
-      className="relative z-10 h-svh w-full overflow-hidden bg-secondary text-primary"
+      data-stage-secondary
+      className="relative z-10 h-dvh min-h-[100dvh] w-full overflow-hidden bg-secondary text-primary"
     >
       {/* ================= INTRO: gym photo ================= */}
       <div data-intro-bg aria-hidden className="absolute inset-0 z-0 will-change-transform">

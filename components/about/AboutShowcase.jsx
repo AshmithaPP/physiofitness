@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap, useGSAP, SplitText, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
 
@@ -316,15 +317,13 @@ export default function AboutShowcase() {
 
           <div className="mt-7 sm:mt-8 flex justify-center">
             <Magnetic>
-              <a
-                href="https://physiofitstudio.org/book"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/book"
                 className="btn btn-light h-12 px-8 text-xs sm:text-sm font-medium shadow-xl hover:shadow-2xl transition-all"
               >
                 Book an appointment
                 <span aria-hidden className="ml-2 text-base leading-none">↗</span>
-              </a>
+              </Link>
             </Magnetic>
           </div>
         </div>

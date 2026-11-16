@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
 
@@ -20,7 +21,7 @@ const SERVICES_DATA = [
       "Dry needling & manual therapy",
     ],
     cta: "Book Physiotherapy",
-    href: "https://physiofitstudio.org/book",
+    href: "/book",
     img: "/images/hero/assess.jpg",
     alt: "Physiotherapy musculoskeletal assessment and manual therapy",
     deskY: -35,
@@ -39,7 +40,7 @@ const SERVICES_DATA = [
       "Corrective exercise",
     ],
     cta: "Book Fitness",
-    href: "https://physiofitstudio.org/book",
+    href: "/book",
     img: "/images/hero/sustain.jpg",
     alt: "Personalised strength and conditioning training at Physiofit",
     deskY: -10,
@@ -58,9 +59,10 @@ const SERVICES_DATA = [
       "Chronic pain programs",
     ],
     cta: "Book Rehab",
-    href: "https://physiofitstudio.org/book",
-    img: "/images/services/studio-rehab.jpg",
-    alt: "Guided post-surgical and injury rehabilitation exercise",
+    href: "/book",
+    img: "/images/services/rehab.jpg",
+    pos: "object-center",
+    alt: "Physiotherapist assessing a patient's knee during rehabilitation",
     deskY: 15,
   },
   {
@@ -77,7 +79,7 @@ const SERVICES_DATA = [
       "Deep relaxation",
     ],
     cta: "Book Foot Spa",
-    href: "https://physiofitstudio.org/book",
+    href: "/book",
     img: "/images/services/footspa.jpg",
     alt: "Restorative warm water foot spa and reflexology",
     deskY: 40,
@@ -96,9 +98,10 @@ const SERVICES_DATA = [
       "Post-workout recovery",
     ],
     cta: "Book Cupping",
-    href: "https://physiofitstudio.org/book",
-    img: "/images/hero/treat.jpg",
-    alt: "Therapeutic cupping and deep myofascial release",
+    href: "/book",
+    img: "/images/services/cupping.jpg",
+    pos: "object-[center_50%] lg:object-center",
+    alt: "Therapist applying cupping therapy to a client's back",
     deskY: 65,
   },
 ];
@@ -251,7 +254,7 @@ export default function ServicesShowcase() {
                         fill
                         priority={i === 0}
                         sizes="(min-width: 1024px) 40vw, (min-width: 640px) 70vw, 92vw"
-                        className="object-cover object-center"
+                        className={`object-cover ${s.pos ?? "object-center"}`}
                       />
                     </div>
                     {/* Dark gradient base for contrast */}
@@ -305,15 +308,13 @@ export default function ServicesShowcase() {
                 {/* Booking CTA Button */}
                 <div className="mt-4 sm:mt-7 flex justify-center lg:justify-start">
                   <Magnetic>
-                    <a
+                    <Link
                       href={curr.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="btn btn-light h-9 sm:h-11 px-5 sm:px-6 text-xs sm:text-sm font-medium shadow-lg hover:shadow-xl transition-all"
                     >
                       {curr.cta}
                       <span aria-hidden className="ml-1 text-base leading-none">↗</span>
-                    </a>
+                    </Link>
                   </Magnetic>
                 </div>
               </div>

@@ -143,6 +143,7 @@ export default function StoryStage({ ready }) {
       if (!reduced) {
         gsap.timeline({ defaults: { ease: "expo.out" } })
           .fromTo(q("[data-intro-bg-inner]"), { scale: 1.22 }, { scale: 1, duration: 3.2, ease: "power2.out" }, 0)
+          .fromTo(q("[data-fly-logo] [data-wm-mark]"), { scale: 0.4, rotate: -25, autoAlpha: 0 }, { scale: 1, rotate: 0, autoAlpha: 1, duration: 1.4, ease: "back.out(1.6)" }, 0.15)
           .fromTo(logoChars.chars, { yPercent: 115 }, { yPercent: 0, duration: 1.4, stagger: 0.045 }, 0.25)
           .fromTo(q("[data-intro-in]"), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, stagger: 0.12 }, 0.7);
       }
@@ -518,7 +519,7 @@ export default function StoryStage({ ready }) {
           <span data-intro-in className="eyebrow block text-[0.625rem] text-primary/85 sm:text-xs">Physiotherapy · Rehab · Fitness</span>
         </p>
         <div data-fly-logo className="pointer-events-auto origin-center cursor-text select-text will-change-transform">
-          <Wordmark className="text-[clamp(2.25rem,6vw,4.75rem)]" />
+          <Wordmark priority className="text-[clamp(1.9rem,6vw,4.75rem)]" />
         </div>
         <p data-intro-fade className="pointer-events-auto mt-4 cursor-text select-text md:mt-5">
           <span data-intro-in className="block text-sm font-light text-primary/80 sm:text-base">

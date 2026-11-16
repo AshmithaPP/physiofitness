@@ -69,7 +69,7 @@ export default function Navbar() {
         className={`group/nav relative z-10 mx-auto flex h-14 max-w-[110rem] items-center justify-between rounded-full px-2 text-primary transition-[background-color,backdrop-filter,box-shadow] duration-700 ease-expo md:h-16 ${!isHome ? "is-scrolled" : ""} [&.is-scrolled]:bg-secondary/85 [&.is-scrolled]:px-5 [&.is-scrolled]:shadow-[0_10px_40px_-12px] [&.is-scrolled]:shadow-secondary/40 [&.is-scrolled]:backdrop-blur-xl`}
       >
         <Link href="/" data-nav-logo aria-label="Physiofit Studio home" className="relative z-10">
-          <Wordmark className="text-[1.65rem]" />
+          <Wordmark priority className="text-[1.35rem] min-[400px]:text-[1.5rem] md:text-[1.65rem]" />
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">

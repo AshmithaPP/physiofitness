@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import Wordmark from "./Wordmark";
 import Magnetic from "./Magnetic";
@@ -18,6 +19,18 @@ export default function Navbar() {
   const bar = useRef(null);
   const menu = useRef(null);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  // On inner pages (like /services), reveal logo & items immediately on mount
+  useGSAP(
+    () => {
+      if (!isHome) {
+        gsap.set("[data-nav-logo], [data-nav-item]", { autoAlpha: 1, y: 0 });
+      }
+    },
+    { dependencies: [isHome], scope: root }
+  );
 
   // Logo + links are revealed by StoryStage's scroll timeline: the intro logo
   // flies into [data-nav-logo] and [data-nav-item]s fade in as it lands.
@@ -53,18 +66,18 @@ export default function Navbar() {
         ref={bar}
         data-navbar
         aria-label="Primary"
-        className="group/nav relative z-10 mx-auto flex h-14 max-w-[110rem] items-center justify-between rounded-full px-2 text-primary transition-[background-color,backdrop-filter,box-shadow] duration-700 ease-expo md:h-16 [&.is-scrolled]:bg-secondary/85 [&.is-scrolled]:px-5 [&.is-scrolled]:shadow-[0_10px_40px_-12px] [&.is-scrolled]:shadow-secondary/40 [&.is-scrolled]:backdrop-blur-xl"
+        className={`group/nav relative z-10 mx-auto flex h-14 max-w-[110rem] items-center justify-between rounded-full px-2 text-primary transition-[background-color,backdrop-filter,box-shadow] duration-700 ease-expo md:h-16 ${!isHome ? "is-scrolled" : ""} [&.is-scrolled]:bg-secondary/85 [&.is-scrolled]:px-5 [&.is-scrolled]:shadow-[0_10px_40px_-12px] [&.is-scrolled]:shadow-secondary/40 [&.is-scrolled]:backdrop-blur-xl`}
       >
         <Link href="/" data-nav-logo aria-label="Physiofit Studio home" className="relative z-10">
           <Wordmark className="text-[1.65rem]" />
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
-          {LINKS.map((l, i) => (
+          {LINKS.map((l) => (
             <li key={l.href} data-nav-item>
               <Link
                 href={l.href}
-                aria-current={i === 0 ? "page" : undefined}
+                aria-current={pathname === l.href ? "page" : undefined}
                 className="eyebrow block rounded-full border border-transparent px-3.5 py-1.5 text-xs transition-colors duration-500 hover:border-line-inverse aria-[current=page]:border-primary/60"
               >
                 {l.label}
@@ -124,17 +137,25 @@ export default function Navbar() {
         className="fixed inset-x-[var(--gutter)] top-[calc(3.5rem+1.25rem)] z-40 mx-auto hidden max-w-sm flex-col rounded-3xl border border-primary/20 bg-secondary/95 p-3 text-primary shadow-[0_25px_60px_-15px] shadow-black/60 backdrop-blur-2xl lg:hidden"
       >
         <ul className="flex flex-col gap-1">
-          {[...LINKS, { label: "Book appointment", href: "/book" }].map((l) => (
-            <li key={l.href}>
-              <Link
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="block rounded-2xl px-4 py-2.5 text-base font-medium text-primary/90 transition-all hover:bg-primary/10 hover:text-primary active:bg-primary/15"
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
+          {[...LINKS, { label: "Book appointment", href: "/book" }].map((l) => {
+            const isActive = pathname === l.href;
+            return (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`block rounded-2xl px-4 py-2.5 text-base font-medium transition-all ${
+                    isActive
+                      ? "bg-primary/20 text-primary font-semibold"
+                      : "text-primary/90 hover:bg-primary/10 hover:text-primary active:bg-primary/15"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>

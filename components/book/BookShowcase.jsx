@@ -266,26 +266,32 @@ export default function BookShowcase() {
         <div data-blob className="absolute top-[45%] -left-24 h-[18rem] w-[18rem] rounded-full bg-secondary/[0.06] blur-[100px] sm:h-[28rem] sm:w-[28rem]" />
       </div>
 
-      <div className="mx-auto w-full max-w-[90rem] px-[var(--gutter)] pt-28 pb-20 sm:pt-36 sm:pb-28">
+      {/* ================= HERO BAND (brand colour) ================= */}
+      {status !== "done" && (
+        <div className="relative bg-secondary text-primary">
+          <div className="mx-auto w-full max-w-[90rem] px-[var(--gutter)] pt-28 pb-10 sm:pt-36 sm:pb-14">
+            <header className="max-w-3xl">
+              <p data-head-fade className="eyebrow text-primary/70">Book</p>
+              <h1 className="mt-3 font-display text-[clamp(2.25rem,6vw,4.25rem)] font-medium leading-[1] tracking-[-0.035em] sm:mt-4">
+                <span data-line className="mask-line">
+                  <span className="block">
+                    Reserve your <span className="italic-accent text-primary/70">slot.</span>
+                  </span>
+                </span>
+              </h1>
+              <p data-head-sub className="mt-5 max-w-xl text-lead font-light text-primary/75 sm:mt-6">
+                Pick a date, choose a time, and tell us who you are. We&apos;ll confirm by phone or email shortly.
+              </p>
+            </header>
+          </div>
+        </div>
+      )}
+
+      <div className={`mx-auto w-full max-w-[90rem] px-[var(--gutter)] pb-20 sm:pb-28 ${status === "done" ? "pt-28 sm:pt-36" : "pt-8 sm:pt-12"}`}>
         {status === "done" ? (
           <Confirmation date={date} hour={hour} name={form.name} code={passCode} onReset={reset} />
         ) : (
           <>
-          {/* ================= HEADING ================= */}
-          <header className="mb-9 max-w-3xl sm:mb-12">
-            <p data-head-fade className="eyebrow text-secondary/70">Book</p>
-            <h1 className="mt-3 font-display text-[clamp(2.25rem,6vw,4.25rem)] font-medium leading-[1] tracking-[-0.035em] sm:mt-4">
-              <span data-line className="mask-line">
-                <span className="block">
-                  Reserve your <span className="italic-accent text-secondary/70">slot.</span>
-                </span>
-              </span>
-            </h1>
-            <p data-head-sub className="mt-5 max-w-xl text-lead font-light text-secondary/75 sm:mt-6">
-              Pick a date, choose a time, and tell us who you are. We&apos;ll confirm by phone or email shortly.
-            </p>
-          </header>
-
           <form
             onSubmit={submit}
             className="grid items-start gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] xl:gap-8"

@@ -12,14 +12,14 @@ import Image from "next/image";
  * to the full-screen intro — which lets the intro logo fly into the navbar and
  * land as an exact match.
  */
-export default function Wordmark({ className = "", priority = false, onLight = false }) {
+export default function Wordmark({ className = "", markClassName = "", priority = false, onLight = false }) {
   return (
     <span className={`inline-flex items-center gap-[0.32em] whitespace-nowrap font-display leading-none ${className}`}>
       <span
         data-wm-mark
         className={`inline-flex shrink-0 items-center justify-center ${
           onLight ? "rounded-[0.34em] bg-secondary p-[0.16em] shadow-[0_0.15em_0.5em_-0.15em] shadow-ink/40" : ""
-        }`}
+        } ${markClassName}`}
       >
         <Image
           src="/images/brand/logo.png"

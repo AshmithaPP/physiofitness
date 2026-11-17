@@ -188,9 +188,10 @@ export default function StoryStage({ ready }) {
             setVpVars();
             setPinSpacerBg();
           },
-          onLeave: () => navBar?.classList.add("is-scrolled"),
-          onEnterBack: () => navBar?.classList.remove("is-scrolled"),
         },
+        // the navbar turns into the white pill the moment the intro logo lands
+        // in it — the same bar every other page shows
+        onUpdate: () => navBar?.classList.toggle("is-scrolled", tl.time() >= W + 0.9),
       });
 
       // photo parked on the hero slot from the start

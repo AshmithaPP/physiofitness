@@ -110,7 +110,7 @@ export default function ContactShowcase() {
   };
 
   return (
-    <div ref={root} className="relative w-full bg-primary text-secondary select-text font-roboto">
+    <div ref={root} className="relative w-full bg-secondary text-primary select-text font-roboto">
       
       {/* ================= MAIN CONTACT SECTION (Address on Left, Animated Form on Right) ================= */}
       <section
@@ -124,13 +124,13 @@ export default function ContactShowcase() {
             
             {/* Studio Address */}
             <div className="text-left">
-              <span className="eyebrow block text-secondary/65 text-xs font-semibold tracking-widest mb-2">
+              <span className="eyebrow block text-primary/65 text-xs font-semibold tracking-widest mb-2">
                 Studio
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-secondary leading-tight">
+              <h2 className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-primary leading-tight">
                 New No. 128, N Usman Road
               </h2>
-              <p className="text-sm sm:text-base text-secondary/80 mt-1 font-light">
+              <p className="text-sm sm:text-base text-primary/80 mt-1 font-light">
                 T. Nagar, Chennai &ndash; 600017
               </p>
             </div>
@@ -139,32 +139,32 @@ export default function ContactShowcase() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 pt-1">
               {/* Call Us */}
               <div className="text-left">
-                <span className="eyebrow block text-secondary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
+                <span className="eyebrow block text-primary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
                   Call us
                 </span>
                 <a
                   href="tel:+917200831203"
-                  className="font-display text-lg sm:text-xl font-medium text-secondary hover:underline underline-offset-4 block"
+                  className="font-display text-lg sm:text-xl font-medium text-primary hover:underline underline-offset-4 block"
                 >
                   +91 7200831203
                 </a>
-                <p className="text-xs text-secondary/70 mt-1 font-light">
+                <p className="text-xs text-primary/70 mt-1 font-light">
                   Direct line to our clinic desk
                 </p>
               </div>
 
               {/* Email */}
               <div className="text-left">
-                <span className="eyebrow block text-secondary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
+                <span className="eyebrow block text-primary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
                   Email
                 </span>
                 <a
                   href="mailto:afrozmeeran13@gmail.com"
-                  className="font-display text-base sm:text-lg font-medium text-secondary hover:underline underline-offset-4 block break-all"
+                  className="font-display text-base sm:text-lg font-medium text-primary hover:underline underline-offset-4 block break-all"
                 >
                   afrozmeeran13@gmail.com
                 </a>
-                <p className="text-xs text-secondary/70 mt-1 font-light">
+                <p className="text-xs text-primary/70 mt-1 font-light">
                   We usually reply within a few hours
                 </p>
               </div>
@@ -172,13 +172,13 @@ export default function ContactShowcase() {
 
             {/* Hours (Unboxed) */}
             <div className="text-left pt-1">
-              <span className="eyebrow block text-secondary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
+              <span className="eyebrow block text-primary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
                 Hours
               </span>
-              <p className="font-display text-lg sm:text-xl font-medium text-secondary">
+              <p className="font-display text-lg sm:text-xl font-medium text-primary">
                 Open 7 days a week
               </p>
-              <p className="text-xs sm:text-sm text-secondary/80 mt-0.5 font-light">
+              <p className="text-xs sm:text-sm text-primary/80 mt-0.5 font-light">
                 10:00 AM &ndash; 7:00 PM
               </p>
             </div>
@@ -186,19 +186,19 @@ export default function ContactShowcase() {
             {/* Embedded Location Map in UI */}
             <div className="mt-2 text-left">
               <div className="flex items-center justify-between mb-2">
-                <span className="eyebrow text-secondary/65 text-[0.6875rem] font-semibold tracking-wider">
+                <span className="eyebrow text-primary/65 text-[0.6875rem] font-semibold tracking-wider">
                   Location
                 </span>
                 <a
                   href={MAPS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="eyebrow text-[0.6875rem] text-secondary hover:underline underline-offset-4"
+                  className="eyebrow text-[0.6875rem] text-primary hover:underline underline-offset-4"
                 >
                   Open in Google Maps ↗
                 </a>
               </div>
-              <div className="relative w-full h-[200px] sm:h-[260px] rounded-2xl overflow-hidden shadow-md border border-line bg-primary">
+              <div className="relative w-full h-[200px] sm:h-[260px] rounded-2xl overflow-hidden shadow-md border border-line-inverse bg-primary">
                 <iframe
                   title="Physiofit Studio Location Map in T. Nagar Chennai"
                   src="https://maps.google.com/maps?q=128+North+Usman+Road+T+Nagar+Chennai+600017&t=&z=15&ie=UTF8&iwloc=&output=embed"
@@ -230,14 +230,14 @@ export default function ContactShowcase() {
                 className="shrink-0 h-[200px] min-[400px]:h-[230px] sm:h-[340px] md:h-[400px] lg:h-[450px] xl:h-[480px] w-auto aspect-[614/800] relative z-30 pointer-events-none -mr-8 min-[400px]:-mr-9 sm:-mr-14 md:-mr-18 lg:-mr-22 mb-0 will-change-transform bg-transparent"
               >
                 {/* Contact shadow on floor under shoes */}
-                <div className="absolute -bottom-1.5 left-4 right-4 h-3 bg-secondary/25 rounded-full blur-[4px] pointer-events-none" />
+                <div className="absolute -bottom-1.5 left-4 right-4 h-3 bg-ink/60 rounded-full blur-[4px] pointer-events-none" />
 
                 <Image
                   src="/images/contact/physiotherapist-pull-blue.png"
                   alt="Physiotherapist facing user and holding the form card into position"
                   fill
                   sizes="(min-width: 1280px) 380px, (min-width: 1024px) 350px, (min-width: 640px) 270px, 170px"
-                  className="object-contain object-bottom drop-shadow-[4px_10px_20px_color-mix(in_oklch,var(--brand-ink)_22%,transparent)] bg-transparent"
+                  className="object-contain object-bottom drop-shadow-[4px_10px_20px_color-mix(in_oklch,var(--brand-ink)_55%,transparent)] bg-transparent"
                   priority
                 />
               </div>
@@ -245,7 +245,7 @@ export default function ContactShowcase() {
               {/* Dual-Pane Form Card */}
               <div
                 ref={cardRef}
-                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-secondary/25 border border-secondary/20 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
+                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-ink/70 border border-primary/15 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
               >
                 
                 {/* Left Pane: Walking Rehabilitation Photo (User Attached 2nd Image) */}

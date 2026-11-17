@@ -389,7 +389,7 @@ export default function ContactShowcase() {
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="btn btn-light w-full h-9 xs:h-10 sm:h-11 text-xs sm:text-sm font-medium shadow-md hover:shadow-xl transition-all disabled:opacity-60"
+                            className="btn btn-light w-full h-10 sm:h-11 whitespace-nowrap px-5 text-xs sm:text-sm font-medium shadow-md hover:shadow-xl transition-all disabled:opacity-60"
                             suppressHydrationWarning
                           >
                             {isSubmitting ? "Sending..." : "Send message"}

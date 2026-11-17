@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
+import { readClinicNow } from "@/lib/clinicClock";
 
 /* ==========================================================================
    Static data
@@ -28,20 +29,6 @@ const PERIODS = [
    Date helpers — "today" is always the clinic's day (Asia/Kolkata)
    ========================================================================== */
 
-const clinicClock = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Kolkata",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  hourCycle: "h23",
-});
-
-// Stable string snapshot (changes at most once an hour) for useSyncExternalStore.
-const readClinicNow = () => {
-  const p = Object.fromEntries(clinicClock.formatToParts(new Date()).map((x) => [x.type, x.value]));
-  return `${p.year}-${p.month}-${p.day}-${p.hour}`;
-};
 const subscribeClock = (cb) => {
   const id = setInterval(cb, 60_000);
   return () => clearInterval(id);
@@ -61,31 +48,30 @@ const longDate = (key) => {
   };
 };
 
-// Deterministic "already booked" pattern so the demo calendar feels real.
-const isBooked = (dateKey, hour) => {
-  let h = 2166136261;
-  const s = `${dateKey}#${hour}`;
-  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
-  return (h >>> 0) % 100 < 28;
-};
-
+// Every slot within opening hours is offered; only times that have already
+// passed (today) are unavailable. The studio confirms the final time by phone.
 const slotsFor = (dateKey, now) =>
   Array.from({ length: CLOSE_HOUR - OPEN_HOUR }, (_, i) => {
     const hour = OPEN_HOUR + i;
     const past = dateKey < now.dateKey || (dateKey === now.dateKey && hour <= now.hour);
-    return { hour, label: fmtHour(hour), status: past ? "past" : isBooked(dateKey, hour) ? "booked" : "open" };
+    return { hour, label: fmtHour(hour), status: past ? "past" : "open" };
   });
 
 /* ==========================================================================
    Component
    ========================================================================== */
 
-export default function BookShowcase() {
+/**
+ * `initialNow` comes from the server (same "YYYY-MM-DD-HH" format as
+ * readClinicNow) so the calendar's dates are in the very first HTML,
+ * before any JavaScript has loaded. The browser then keeps it current.
+ */
+export default function BookShowcase({ initialNow = null }) {
   const root = useRef(null);
   const monthDir = useRef(1);
   const firstMonthRun = useRef(true);
 
-  const nowKey = useSyncExternalStore(subscribeClock, readClinicNow, () => null);
+  const nowKey = useSyncExternalStore(subscribeClock, readClinicNow, () => initialNow);
   const now = useMemo(() => {
     if (!nowKey) return null;
     const [y, m, d, h] = nowKey.split("-").map(Number);
@@ -137,7 +123,8 @@ export default function BookShowcase() {
         .from(q("[data-head-sub]"), { autoAlpha: 0, y: 20, duration: 1 }, "-=1")
         .from(q("[data-card]"), { autoAlpha: 0, y: 56, scale: 0.97, duration: 1.3, stagger: 0.14 }, "-=0.9")
         .from(q("[data-field]"), { autoAlpha: 0, x: 28, duration: 0.9, stagger: 0.07 }, "-=0.8")
-        .from(q("[data-day]"), { autoAlpha: 0, scale: 0.6, duration: 0.6, stagger: { each: 0.012, grid: [6, 7], from: "start" }, ease: "back.out(1.7)" }, "<");
+        // dates stay visible the whole time: just a quick pop, never hidden
+        .from(q("[data-day]"), { scale: 0.85, duration: 0.5, stagger: { each: 0.008, grid: [6, 7], from: "start" }, ease: "back.out(1.7)" }, 0.15);
 
       // slow rotating sheen behind the green form card
       gsap.to(q("[data-sheen]"), { rotate: 360, duration: 18, repeat: -1, ease: "none" });
@@ -374,7 +361,7 @@ export default function BookShowcase() {
 
                   <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[0.6875rem] font-medium text-secondary/65">
                     <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary" />Plenty of slots</span>
-                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary/30" />Filling up</span>
+                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary/30" />Few slots left today</span>
                     <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-md border-2 border-secondary" />Today</span>
                   </div>
                 </div>
@@ -420,12 +407,12 @@ export default function BookShowcase() {
                                       disabled={off}
                                       onClick={() => setHour(s.hour)}
                                       aria-pressed={on}
-                                      aria-label={`${s.label}${off ? (s.status === "booked" ? ", booked" : ", passed") : ""}`}
+                                      aria-label={`${s.label}${off ? ", passed" : ""}`}
                                       className={`h-11 rounded-xl border-2 text-[0.8125rem] font-semibold transition-all duration-300 sm:h-12 sm:text-sm ${
                                         on
                                           ? "border-secondary bg-secondary text-primary shadow-[0_10px_24px_-12px] shadow-secondary/80"
                                           : off
-                                          ? "cursor-not-allowed border-transparent bg-mist/60 text-secondary/30 line-through"
+                                          ? "cursor-not-allowed border-transparent bg-mist/60 text-secondary/30"
                                           : "border-secondary/15 bg-primary hover:-translate-y-0.5 hover:border-secondary/60 active:scale-95"
                                       }`}
                                       suppressHydrationWarning

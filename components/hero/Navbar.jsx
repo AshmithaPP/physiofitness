@@ -9,8 +9,9 @@ import Magnetic from "./Magnetic";
 
 const LINKS = [
   { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Resources", href: "/resources" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -21,6 +22,8 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  // a section stays highlighted on its sub-pages (e.g. /resources/some-article)
+  const isCurrent = (href) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
 
   // On inner pages (like /services), reveal logo & items immediately on mount
   useGSAP(
@@ -66,12 +69,13 @@ export default function Navbar() {
         ref={bar}
         data-navbar
         aria-label="Primary"
-        className={`group/nav relative z-10 mx-auto flex h-12 max-w-[110rem] items-center justify-between rounded-full px-2 text-primary transition-[background-color,color,backdrop-filter,box-shadow] duration-700 ease-expo md:h-14 ${!isHome ? "is-scrolled" : ""} [&.is-scrolled]:bg-primary/95 [&.is-scrolled]:pl-3.5 [&.is-scrolled]:pr-1.5 md:[&.is-scrolled]:pl-4 md:[&.is-scrolled]:pr-2 [&.is-scrolled]:text-secondary [&.is-scrolled]:shadow-[0_10px_40px_-12px] [&.is-scrolled]:shadow-ink/30 [&.is-scrolled]:backdrop-blur-xl`}
+        className={`group/nav relative z-10 mx-auto flex h-12 max-w-[110rem] items-center justify-between rounded-full px-2 text-primary transition-[background-color,color,backdrop-filter,box-shadow] duration-700 ease-expo md:h-14 ${!isHome ? "is-scrolled" : ""} [&.is-scrolled]:bg-primary/95 [&.is-scrolled]:pl-5 [&.is-scrolled]:pr-3.5 md:[&.is-scrolled]:pl-10 md:[&.is-scrolled]:pr-7 lg:[&.is-scrolled]:pl-12 lg:[&.is-scrolled]:pr-9 [&.is-scrolled]:text-secondary [&.is-scrolled]:shadow-[0_10px_40px_-12px] [&.is-scrolled]:shadow-ink/30 [&.is-scrolled]:backdrop-blur-xl`}
       >
         <Link href="/" data-nav-logo aria-label="Physiofit Studio home" className="relative z-10">
           <Wordmark
             priority
-            className="text-[1.3rem] min-[400px]:text-[1.4rem] md:text-[1.5rem]"
+            markOnly
+            className="text-[1.4rem] md:text-[1.6rem]"
             markClassName="rounded-[0.3em] p-[0.12em] transition-colors duration-700 group-[.is-scrolled]/nav:bg-secondary"
           />
         </Link>
@@ -81,7 +85,7 @@ export default function Navbar() {
             <li key={l.href} data-nav-item>
               <Link
                 href={l.href}
-                aria-current={pathname === l.href ? "page" : undefined}
+                aria-current={isCurrent(l.href) ? "page" : undefined}
                 className="eyebrow block rounded-full border border-transparent px-3.5 py-1.5 text-xs transition-colors duration-500 hover:border-line-inverse aria-[current=page]:border-primary/60 group-[.is-scrolled]/nav:hover:border-line group-[.is-scrolled]/nav:aria-[current=page]:border-secondary/60"
               >
                 {l.label}
@@ -142,7 +146,7 @@ export default function Navbar() {
       >
         <ul className="flex flex-col gap-1">
           {[...LINKS, { label: "Book appointment", href: "/book" }].map((l) => {
-            const isActive = pathname === l.href;
+            const isActive = isCurrent(l.href);
             return (
               <li key={l.href}>
                 <Link

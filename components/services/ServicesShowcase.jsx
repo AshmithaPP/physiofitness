@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
+import { ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
 
 const SERVICES_DATA = [
@@ -24,7 +24,6 @@ const SERVICES_DATA = [
     href: "/book",
     img: "/images/hero/assess.jpg",
     alt: "Physiotherapy musculoskeletal assessment and manual therapy",
-    deskY: -35,
   },
   {
     id: "fitness",
@@ -43,7 +42,6 @@ const SERVICES_DATA = [
     href: "/book",
     img: "/images/hero/sustain.jpg",
     alt: "Personalised strength and conditioning training at Physiofit",
-    deskY: -10,
   },
   {
     id: "rehab",
@@ -63,7 +61,6 @@ const SERVICES_DATA = [
     img: "/images/services/rehab.jpg",
     pos: "object-center",
     alt: "Physiotherapist assessing a patient's knee during rehabilitation",
-    deskY: 15,
   },
   {
     id: "foot-spa",
@@ -82,7 +79,6 @@ const SERVICES_DATA = [
     href: "/book",
     img: "/images/services/footspa.jpg",
     alt: "Restorative warm water foot spa and reflexology",
-    deskY: 40,
   },
   {
     id: "cupping",
@@ -102,7 +98,6 @@ const SERVICES_DATA = [
     img: "/images/services/cupping.jpg",
     pos: "object-[center_50%] lg:object-center",
     alt: "Therapist applying cupping therapy to a client's back",
-    deskY: 65,
   },
 ];
 
@@ -173,16 +168,6 @@ export default function ServicesShowcase() {
 
   const curr = SERVICES_DATA[activeStep] ?? SERVICES_DATA[0];
 
-  useEffect(() => {
-    const photo = photoRef.current;
-    if (!photo || typeof window === "undefined") return;
-    if (window.innerWidth >= 1024) {
-      gsap.to(photo, { y: curr.deskY, duration: 0.6, ease: "power2.out" });
-    } else {
-      gsap.set(photo, { y: 0 });
-    }
-  }, [activeStep, curr.deskY]);
-
   return (
     <div ref={root} className="relative w-full bg-secondary text-primary select-text font-roboto">
       {/* ================= INTRO HEADER ================= */}
@@ -235,7 +220,7 @@ export default function ServicesShowcase() {
               <div
                 ref={photoRef}
                 data-srv-master-photo
-                className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/5] w-full max-w-[20rem] sm:max-w-[24rem] lg:max-w-[28rem] xl:max-w-[31rem] overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px] shadow-ink/60 lg:shadow-[0_35px_90px_-20px] lg:shadow-ink/75 border border-primary/20 will-change-transform"
+                className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/5] w-[min(100%,20rem,max(11rem,(100svh_-_28.5rem)_*_1.6))] sm:w-[min(100%,34rem,max(13rem,(100svh_-_30rem)_*_1.78))] lg:w-[min(100%,28rem,max(15rem,(100svh_-_13rem)_*_0.8))] xl:w-[min(100%,31rem,max(15rem,(100svh_-_13rem)_*_0.8))] overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px] shadow-ink/60 lg:shadow-[0_35px_90px_-20px] lg:shadow-ink/75 border border-primary/20 will-change-transform"
               >
                 {/* 5 Stacked Image Layers: Hardware-accelerated crossfade, ONLY active image is fully visible */}
                 {SERVICES_DATA.map((s, i) => (

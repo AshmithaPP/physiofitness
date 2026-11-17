@@ -3,12 +3,13 @@
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, useGSAP, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
 
 /* --------------------------------------------------------------------------
    Services drop
    A studio photo sits in the centre; the four service photos fall from the
-   top of the screen and land in two piles either side of it (scroll-scrubbed).
+   top of the screen and land in two piles either side of it, all at once, as the
+   section settles into view.
    Resting positions live in CSS (responsive), resting tilts in SERVICES; GSAP animates the
    fall, so every breakpoint lands exactly where its classes say.
    -------------------------------------------------------------------------- */
@@ -68,24 +69,31 @@ export default function ServicesDrop({ ready = true }) {
       const above = (el) => -(el.offsetTop + el.offsetHeight + 80);
       const isMobile = () => typeof window !== "undefined" && window.innerWidth < 1024;
 
-      const setPinSpacerBg = () => {
-        if (stage.parentElement?.classList.contains("pin-spacer")) {
-          stage.parentElement.style.backgroundColor = "var(--brand-primary)";
+      // One scroll = one step: as the section comes in, the page glides so the
+      // whole services screen sits fully in view and every card drops at once.
+      // The next scroll simply carries on to the following section.
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+      const settleIntoView = () => {
+        const top = stage.getBoundingClientRect().top + window.scrollY;
+        if (window.__lenis) {
+          window.__lenis.scrollTo(top, { duration: 0.9, lock: true, easing: (t) => 1 - Math.pow(1 - t, 3) });
+        } else {
+          window.scrollTo({ top, behavior: "smooth" });
         }
       };
-      setPinSpacerBg();
 
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
-        scrollTrigger: {
-          trigger: stage,
-          start: "top top",
-          end: () => `+=${window.innerHeight * 2.2}`,
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onRefresh: setPinSpacerBg,
+      ScrollTrigger.create({
+        trigger: stage,
+        start: "top 80%",
+        end: "bottom 20%",
+        onEnter: () => {
+          settleIntoView();
+          tl.play();
+        },
+        onEnterBack: () => {
+          settleIntoView();
+          tl.play();
         },
       });
 
@@ -112,11 +120,9 @@ export default function ServicesDrop({ ready = true }) {
           0
         );
 
-      // the fall — staggered, alternating sides, with a landing bounce
-      const order = [0, 2, 1, 3, 4, 6, 5, 7].filter((i) => i < pieces.length);
-      order.forEach((idx, n) => {
-        const el = pieces[idx];
-        const at = 0.55 + n * 0.14;
+      // the fall — every card drops at the same moment, with a landing bounce
+      pieces.forEach((el, idx) => {
+        const at = 0.35;
         tl.fromTo(el, { y: () => above(el) }, { y: 0, duration: 1, ease: "bounce.out" }, at)
           .fromTo(el, { rotation: spins[idx] }, { rotation: Number(el.dataset.tilt), duration: 1, ease: "power2.out" }, at);
       });
@@ -125,8 +131,14 @@ export default function ServicesDrop({ ready = true }) {
         q("[data-drop-line]"),
         { yPercent: 110 },
         { yPercent: 0, duration: 0.6, stagger: 0.08, ease: "expo.out" },
-        1.5
-      ).to({}, { duration: 0.4 });
+        1.1
+      ).fromTo(
+        q("[data-drop-btn]"),
+        { autoAlpha: 0, y: 12, scale: 0.9 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.8)" },
+        1.35
+      );
+      tl.timeScale(1.2);
     },
     { scope: root, dependencies: [ready] }
   );
@@ -216,11 +228,19 @@ export default function ServicesDrop({ ready = true }) {
       </ul>
 
       {/* bottom heading */}
-      <div className="absolute inset-x-0 bottom-[4svh] z-30 px-[var(--gutter)] text-center sm:bottom-[6svh] lg:bottom-[7svh]">
-        <h2 id="services-title" className="font-display text-[clamp(1.75rem,min(4vw,6.5svh),3.5rem)] font-medium leading-[1.05] tracking-[-0.035em]">
+      <div className="absolute inset-x-0 bottom-[3svh] z-30 flex flex-col items-center px-[var(--gutter)] text-center sm:bottom-[4svh] lg:bottom-[4.5svh]">
+        <h2 id="services-title" className="font-display text-[clamp(1.75rem,min(4vw,6svh),3.5rem)] font-medium leading-[1.05] tracking-[-0.035em]">
           <span className="mask-line"><span data-drop-line className="block">Care for every body,</span></span>
           <span className="mask-line"><span data-drop-line className="block font-light text-secondary/60">under one roof.</span></span>
         </h2>
+        <Link
+          href="/services"
+          data-drop-btn
+          className="btn btn-primary mt-[1.8svh] h-10 gap-1.5 px-5 text-xs shadow-[0_14px_30px_-14px] shadow-secondary/80 sm:h-11 sm:px-6 sm:text-sm"
+        >
+          Explore services
+          <span aria-hidden className="leading-none">↗</span>
+        </Link>
       </div>
     </section>
   );

@@ -17,6 +17,13 @@
   --brand-line-inverse: color-mix(in oklch, var(--brand-primary) 22%, transparent);
   /* shadow / overlay ink — near-black tinted with the brand */
   --brand-ink: color-mix(in oklch, var(--brand-secondary) 18%, black);
+  /* form errors: a soft red that reads on the brand colour */
+  --brand-danger: #ff9b9b;
+  --brand-danger-ink: #c0392b; /* the same, for light backgrounds */
+  /* text-selection highlight: a bright blue that shows on both the light and the navy sections */
+  --brand-highlight: #2f74e8;
+  /* WhatsApp chat button */
+  --brand-whatsapp: #25d366;
 
   /* motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -35,6 +42,10 @@
   --color-line: var(--brand-line);
   --color-line-inverse: var(--brand-line-inverse);
   --color-ink: var(--brand-ink); /* shadows & dark overlays → shadow-ink/40, bg-ink/40 */
+  --color-danger: var(--brand-danger); /* validation messages → text-danger */
+  --color-danger-ink: var(--brand-danger-ink); /* on light backgrounds → text-danger-ink */
+  --color-whatsapp: var(--brand-whatsapp);
+  --color-highlight: var(--brand-highlight);
 
   /* fonts → Roboto font only */
   --font-roboto: var(--font-roboto), "Roboto", sans-serif;
@@ -134,7 +145,7 @@ body {
 }
 
 ::selection {
-  background: var(--brand-secondary);
+  background: var(--brand-highlight);
   color: var(--brand-primary);
 }
 

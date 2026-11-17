@@ -73,7 +73,8 @@ function boxIn(el, stage) {
      intro  — full-screen gym photo, logo centred
      walk   — camera pushes down the gym aisle (layered parallax + edge blur)
      hero   — logo flies to the navbar, green opens from the aisle, photo grows in
-     steps  — photo flies to the right, four-step method plays inside it
+     then the page scrolls for real: the photo flies down into the next
+     section ("The Physiofit method"), which holds while its four steps play
    -------------------------------------------------------------------------- */
 
 export default function StoryStage({ ready }) {
@@ -82,27 +83,34 @@ export default function StoryStage({ ready }) {
   useGSAP(
     () => {
       if (!ready) return;
-      const stage = root.current;
-      const q = gsap.utils.selector(stage);
+      const wrap = root.current;
+      const stage = wrap.querySelector("[data-story]");
+      const method = wrap.querySelector("[data-method]");
+      const q = gsap.utils.selector(wrap);
       const reduced = prefersReducedMotion();
 
       const photo = q("[data-photo]")[0];
       const logo = q("[data-fly-logo]")[0];
       const heroSlot = q("[data-slot-hero]")[0];
-      const stepsSlot = q("[data-slot-steps]")[0];
       const navLogo = document.querySelector("[data-nav-logo]");
       const navItems = document.querySelectorAll("[data-nav-item]");
       const navBar = document.querySelector("[data-navbar]");
 
       const heroBox = () => boxIn(heroSlot, stage);
-      const stepsBox = () => boxIn(stepsSlot, stage);
+      // The intro logo (icon + name) flies so its ICON lands exactly on the navbar's
+      // icon; the name fades out on the way, since the navbar shows the icon only.
+      const logoMark = logo.querySelector("[data-wm-mark] img");
       const logoFit = () => {
-        const b = boxIn(logo, stage);
-        const t = navLogo.getBoundingClientRect(); // stage == viewport while pinned
+        const b = boxIn(logo, stage); // the whole flying logo; it scales about its centre
+        const m = boxIn(logoMark, stage);
+        const t = (navLogo.querySelector("img") ?? navLogo).getBoundingClientRect(); // stage == viewport while pinned
+        const s = t.width / m.w;
+        const cx = b.x + b.w / 2;
+        const cy = b.y + b.h / 2;
         return {
-          x: t.left + t.width / 2 - (b.x + b.w / 2),
-          y: t.top + t.height / 2 - (b.y + b.h / 2),
-          scale: t.width / b.w,
+          x: t.left + t.width / 2 - cx - s * (m.x + m.w / 2 - cx),
+          y: t.top + t.height / 2 - cy - s * (m.y + m.h / 2 - cy),
+          scale: s,
         };
       };
 
@@ -173,7 +181,7 @@ export default function StoryStage({ ready }) {
         scrollTrigger: {
           trigger: stage,
           start: "top top",
-          end: () => `+=${window.innerHeight * (6.5 + W)}`,
+          end: () => `+=${window.innerHeight * (W + 1.7)}`,
           pin: true,
           scrub: reduced ? true : 1,
           anticipatePin: 1,
@@ -184,15 +192,24 @@ export default function StoryStage({ ready }) {
             delay: 0.1,
             ease: "power2.inOut",
           },
-          onRefresh: () => {
+          onRefresh: (self) => {
             setVpVars();
             setPinSpacerBg();
+            // next frame: the timeline may still be under construction during the first refresh
+            requestAnimationFrame(() => syncNav(self));
           },
+          // always white once the story is behind us, whatever the timeline is doing
+          onLeave: () => navBar?.classList.add("is-scrolled"),
         },
         // the navbar turns into the white pill the moment the intro logo lands
         // in it — the same bar every other page shows
-        onUpdate: () => navBar?.classList.toggle("is-scrolled", tl.time() >= W + 0.9),
+        onUpdate: () => syncNav(tl.scrollTrigger),
       });
+
+      function syncNav(st) {
+        const landed = tl.time() >= W + 0.9 || (st && st.progress >= 0.999);
+        navBar?.classList.toggle("is-scrolled", landed);
+      }
 
       // photo parked on the hero slot from the start
       tl.set(photo, {
@@ -237,6 +254,7 @@ export default function StoryStage({ ready }) {
           { x: () => logoFit().x, y: () => logoFit().y, scale: () => logoFit().scale, duration: 0.9 },
           W
         )
+        .fromTo(q("[data-fly-logo] [data-wm-text]"), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.45, ease: "power1.out" }, W + 0.1)
         .set(logo, { autoAlpha: 0 }, W + 0.9)
         .set(navLogo, { autoAlpha: 1 }, W + 0.9)
         .fromTo(navItems, { autoAlpha: 0, y: -14 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, W + 0.75)
@@ -250,48 +268,93 @@ export default function StoryStage({ ready }) {
 
       tl.addLabel("hero", W + 1.3);
 
-      /* B — hero → steps: the photo travels to the right */
-      const B = W + 1.6;
-      tl.to(q("[data-hero-col]"), { y: -50, autoAlpha: 0, duration: 0.4, stagger: 0.04, ease: "power2.in" }, B)
-        .to(q("[data-booking]"), { autoAlpha: 0, y: 16, duration: 0.25 }, B)
-        .fromTo(
-          photo,
-          {
-            left: () => heroBox().x,
-            top: () => heroBox().y,
-            width: () => heroBox().w,
-            height: () => heroBox().h,
-            borderRadius: () => `${heroBox().w / 2}px ${heroBox().w / 2}px 28px 28px`,
-          },
-          {
-            left: () => stepsBox().x,
-            top: () => stepsBox().y,
-            width: () => stepsBox().w,
-            height: () => stepsBox().h,
-            borderRadius: "36px 36px 36px 36px",
-            duration: 1,
-          },
-          B + 0.1
-        )
-        .fromTo(q("[data-chips]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, B + 0.9)
-        .fromTo(q("[data-steps-in]"), { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, B + 0.6)
-        .fromTo(q('[data-step="0"] [data-tline]'), { yPercent: 130 }, { yPercent: 0, duration: 0.5, stagger: 0.07, ease: "expo.out" }, B + 0.7)
-        .fromTo(q('[data-body="0"]'), { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" }, B + 0.8);
+      // the hero rests a moment, then the story pin releases into a real scroll
+      tl.to({}, { duration: 0.4 }, W + 1.3);
 
-      const S0 = B + 1.3;
-      tl.addLabel("s0", S0);
+      /* B — hero → method: the page genuinely scrolls to the next section while
+         a floating copy of the photo glides from the hero slot into the method
+         frame. Both ends are measured live, so the hand-off is seamless. */
+      const heroHandoff = q("[data-photo-handoff]")[0];
+      const flyer = q("[data-flyer]")[0];
+      const methodPhoto = q("[data-method-photo]")[0];
+      const flyEase = gsap.parseEase("power2.inOut");
+      const lerp = (a, b, t) => a + (b - a) * t;
 
-      /* C — steps 2–4 inside the same photo frame */
+      const placeFlyer = (p) => {
+        if (p <= 0.001 || p >= 0.999) {
+          heroHandoff.style.opacity = p <= 0.001 ? "1" : "0";
+          methodPhoto.style.opacity = p >= 0.999 ? "1" : "0";
+          flyer.style.visibility = "hidden";
+          return;
+        }
+        const a = heroSlot.getBoundingClientRect();
+        const b = methodPhoto.getBoundingClientRect();
+        const t = flyEase(p);
+        const top = lerp(a.width / 2, 36, t);
+        const bottom = lerp(28, 36, t);
+        Object.assign(flyer.style, {
+          visibility: "visible",
+          left: `${lerp(a.left, b.left, t)}px`,
+          top: `${lerp(a.top, b.top, t)}px`,
+          width: `${lerp(a.width, b.width, t)}px`,
+          height: `${lerp(a.height, b.height, t)}px`,
+          borderRadius: `${top}px ${top}px ${bottom}px ${bottom}px`,
+        });
+        heroHandoff.style.opacity = "0";
+        methodPhoto.style.opacity = "0";
+      };
+
+      gsap
+        .timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: {
+            trigger: method,
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => placeFlyer(self.progress),
+            onRefresh: (self) => placeFlyer(self.progress),
+          },
+        })
+        .fromTo(q("[data-steps-in]"), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.05 }, 0.55)
+        .fromTo(q('[data-step="0"] [data-tline]'), { yPercent: 130 }, { yPercent: 0, duration: 0.35, stagger: 0.06, ease: "expo.out" }, 0.6)
+        .fromTo(q('[data-body="0"]'), { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.7)
+        .fromTo(q("[data-chips]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 0.8)
+        .to({}, { duration: 0.01 }, 0.99);
+
+      /* C — the method section holds while the four steps play in its frame */
       const n = STEPS.length;
-      const end = S0 + (n - 1) + 0.5;
+      const end = n - 1 + 0.5;
+      const steps = gsap.timeline({
+        defaults: { ease: "power3.inOut" },
+        scrollTrigger: {
+          trigger: method,
+          start: "top top",
+          end: () => `+=${window.innerHeight * (end + 0.2)}`,
+          pin: true,
+          scrub: reduced ? true : 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          snap: {
+            snapTo: "labelsDirectional",
+            duration: { min: 0.3, max: 0.9 },
+            delay: 0.1,
+            ease: "power2.inOut",
+          },
+        },
+      });
+      steps.addLabel("s0", 0);
 
-      tl.fromTo(q("[data-fill]"), { scaleX: 0 }, { scaleX: 1, ease: "none", duration: end - S0 }, S0)
-        .fromTo(q("[data-knob]"), { left: "0%" }, { left: "100%", ease: "none", duration: end - S0 }, S0);
+      steps
+        .fromTo(q("[data-fill]"), { scaleX: 0 }, { scaleX: 1, ease: "none", duration: end }, 0)
+        .fromTo(q("[data-knob]"), { left: "0%" }, { left: "100%", ease: "none", duration: end }, 0);
 
       for (let i = 1; i < n; i++) {
-        const at = S0 + (i - 1) + 0.35;
+        const at = i - 1 + 0.35;
         const prev = i - 1;
-        tl.to(q(`[data-step="${prev}"] [data-tline]`), { yPercent: -130, duration: 0.45, stagger: 0.05 }, at)
+        steps
+          .to(q(`[data-step="${prev}"] [data-tline]`), { yPercent: -130, duration: 0.45, stagger: 0.05 }, at)
           .to(q(`[data-step="${i}"] [data-tline]`), { yPercent: 0, duration: 0.55, stagger: 0.07 }, at + 0.2)
           .to(q(`[data-body="${prev}"]`), { autoAlpha: 0, y: -20, duration: 0.35 }, at)
           .to(q(`[data-body="${i}"]`), { autoAlpha: 1, y: 0, duration: 0.45 }, at + 0.3)
@@ -302,11 +365,11 @@ export default function StoryStage({ ready }) {
           .to(q(`[data-label="${prev}"]`), { opacity: 0.4, duration: 0.3 }, at + 0.2)
           .to(q(`[data-label="${i}"]`), { opacity: 1, duration: 0.3 }, at + 0.2);
         if (!reduced) {
-          tl.to(photo, { keyframes: { rotate: [0, -3, 0], scale: [1, 0.96, 1] }, duration: 0.8, ease: "power2.inOut" }, at);
+          steps.to(q("[data-method-tilt]"), { keyframes: { rotate: [0, -3, 0], scale: [1, 0.96, 1] }, duration: 0.8, ease: "power2.inOut" }, at);
         }
-        tl.addLabel(`s${i}`, at + 0.85);
+        steps.addLabel(`s${i}`, at + 0.85);
       }
-      tl.to({}, { duration: 0.2 }, end);
+      steps.to({}, { duration: 0.2 }, end);
 
       // initial states are in place — reveal the layers
       gsap.set(q("[data-reveal]"), { autoAlpha: 1 });
@@ -315,8 +378,9 @@ export default function StoryStage({ ready }) {
   );
 
   return (
+    <div ref={root}>
     <section
-      ref={root}
+      data-story
       aria-label="Physiofit Studio"
       data-stage-secondary
       className="relative z-10 h-dvh min-h-[100dvh] w-full overflow-hidden bg-secondary text-primary"
@@ -408,108 +472,34 @@ export default function StoryStage({ ready }) {
         </div>
       </div>
 
-      {/* ================= TRAVELLING PHOTO ================= */}
-      <div
-        data-photo
-        className="invisible absolute z-40 overflow-hidden shadow-[0_40px_90px_-30px] shadow-ink/40 will-change-transform"
-      >
-        <div data-photo-clip className="absolute inset-0 overflow-hidden rounded-[inherit]">
-          <div data-photo-zoom className="absolute inset-0">
-            {STEPS.map((s, i) => (
-              <div key={s.key} data-img={i} className="absolute inset-0 overflow-hidden" style={{ zIndex: i }}>
-                <div data-img-inner className="absolute inset-0 will-change-transform">
-                  <Image
-                    src={s.img}
-                    alt={s.alt}
-                    fill
-                    priority={i === 0}
-                    sizes="(min-width: 1024px) 45vw, 90vw"
-                    className={`object-cover ${s.pos}`}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-secondary/55 via-transparent to-transparent" />
+      {/* ================= HERO PHOTO ================= */}
+      <div data-photo className="invisible absolute z-40 will-change-transform">
+        {/* fades out while the floating copy carries the photo to the next section */}
+        <div data-photo-handoff className="absolute inset-0 rounded-[inherit] shadow-[0_40px_90px_-30px] shadow-ink/40">
+          <div data-photo-clip className="absolute inset-0 overflow-hidden rounded-[inherit]">
+            <div data-photo-zoom className="absolute inset-0">
+              <Image
+                src={STEPS[0].img}
+                alt={STEPS[0].alt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 45vw, 90vw"
+                className={`object-cover ${STEPS[0].pos}`}
+              />
+            </div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-secondary/55 via-transparent to-transparent" />
 
-          {/* step chips (steps scene) */}
-          <div data-chips className="absolute bottom-5 right-5 z-20 lg:bottom-7 lg:right-7">
-            <span className="eyebrow block h-[2.1rem] overflow-hidden rounded-full border border-primary/30 bg-secondary/45 px-3 text-[0.58rem] leading-[2.1rem] backdrop-blur-md">
-              <span data-counter className="block">
-                {STEPS.map((s, i) => (
-                  <span key={s.key} className="block h-[2.1rem]">{pad(i + 1)} · {s.key}</span>
-                ))}
+            {/* booking pill */}
+            <div
+              data-booking
+              className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-3.5 py-2 text-xs font-medium text-secondary shadow-lg"
+            >
+              <span className="relative flex size-1.5">
+                <span className="animate-pulse-ring absolute inset-0 rounded-full bg-secondary" />
+                <span className="relative size-1.5 rounded-full bg-secondary" />
               </span>
-            </span>
-          </div>
-
-          {/* booking pill (hero scene) */}
-          <div
-            data-booking
-            className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-3.5 py-2 text-xs font-medium text-secondary shadow-lg"
-          >
-            <span className="relative flex size-1.5">
-              <span className="animate-pulse-ring absolute inset-0 rounded-full bg-secondary" />
-              <span className="relative size-1.5 rounded-full bg-secondary" />
-            </span>
-            Now booking
-          </div>
-        </div>
-      </div>
-
-      {/* ================= STEPS ================= */}
-      <div data-reveal className="pointer-events-none absolute inset-0 z-50">
-        <div className="mx-auto grid h-full max-w-[110rem] grid-rows-[auto_1fr] gap-4 px-[var(--gutter)] pb-6 pt-20 sm:gap-6 sm:pb-8 sm:pt-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-1 lg:items-center lg:gap-16 lg:pb-0 lg:pt-20">
-          {/* copy */}
-          <div className="order-2 flex flex-col justify-center lg:order-1">
-            <p data-steps-in className="eyebrow mb-2 sm:mb-4 text-primary/70 lg:mb-8">
-              The Physiofit method
-            </p>
-
-            <div className="grid">
-              {STEPS.map((s, i) => (
-                <h2 key={s.key} data-step={i} className="serif text-h2 [grid-area:1/1]">
-                  <span className="mask-line">
-                    <span data-tline className="block">{s.lines[0]}</span>
-                  </span>
-                  <span className="mask-line">
-                    <span data-tline className="italic-accent block">{s.lines[1]}</span>
-                  </span>
-                </h2>
-              ))}
+              Now booking
             </div>
-
-            <div className="mt-3 grid max-w-md sm:mt-5 lg:mt-7">
-              {STEPS.map((s, i) => (
-                <p key={s.key} data-body={i} className="invisible text-sm text-primary/75 sm:text-base lg:text-lead [grid-area:1/1]">
-                  {s.body}
-                </p>
-              ))}
-            </div>
-
-            <div data-steps-in className="mt-5 w-full max-w-sm sm:max-w-md sm:mt-8 lg:max-w-lg lg:mt-12">
-              <div className="relative h-8">
-                <div className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-primary/25" />
-                <div data-fill className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 rounded-full bg-primary" />
-                <span
-                  data-knob
-                  aria-hidden
-                  className="absolute left-0 top-1/2 h-5 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_7px] shadow-primary/20 sm:h-5.5 sm:w-12"
-                />
-              </div>
-              <ol className="mt-3.5 flex justify-between">
-                {STEPS.map((s, i) => (
-                  <li key={s.key} data-label={i} className="eyebrow text-[0.6875rem] font-medium tracking-[0.12em] sm:text-xs">
-                    {s.key}
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-
-          {/* landing box for the photo */}
-          <div className="relative order-1 flex min-h-0 items-center justify-center lg:order-2 lg:h-full">
-            <div data-slot-steps className="relative aspect-[4/3] h-[24svh] max-w-full sm:h-[30svh] lg:aspect-[5/6] lg:h-[72svh]" />
           </div>
         </div>
       </div>
@@ -536,5 +526,117 @@ export default function StoryStage({ ready }) {
         </div>
       </div>
     </section>
+
+      {/* ================= THE PHYSIOFIT METHOD (its own section) ================= */}
+      <section
+        data-method
+        data-stage-secondary
+        aria-label="The Physiofit method"
+        className="relative z-10 h-dvh min-h-[100dvh] w-full overflow-hidden bg-secondary text-primary"
+      >
+        <div data-reveal className="absolute inset-0">
+          <div className="mx-auto grid h-full max-w-[110rem] grid-rows-[auto_1fr] gap-4 px-[var(--gutter)] pb-6 pt-20 sm:gap-6 sm:pb-8 sm:pt-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-1 lg:items-center lg:gap-16 lg:pb-0 lg:pt-20">
+            {/* copy */}
+            <div className="order-2 flex flex-col justify-center lg:order-1">
+              <p data-steps-in className="eyebrow mb-2 sm:mb-4 text-primary/70 lg:mb-8">
+                The Physiofit method
+              </p>
+
+              <div className="grid">
+                {STEPS.map((s, i) => (
+                  <h2 key={s.key} data-step={i} className="serif text-h2 [grid-area:1/1]">
+                    <span className="mask-line">
+                      <span data-tline className="block">{s.lines[0]}</span>
+                    </span>
+                    <span className="mask-line">
+                      <span data-tline className="italic-accent block">{s.lines[1]}</span>
+                    </span>
+                  </h2>
+                ))}
+              </div>
+
+              <div className="mt-3 grid max-w-md sm:mt-5 lg:mt-7">
+                {STEPS.map((s, i) => (
+                  <p key={s.key} data-body={i} className="invisible text-sm text-primary/75 sm:text-base lg:text-lead [grid-area:1/1]">
+                    {s.body}
+                  </p>
+                ))}
+              </div>
+
+              <div data-steps-in className="mt-5 w-full max-w-sm sm:max-w-md sm:mt-8 lg:max-w-lg lg:mt-12">
+                <div className="relative h-8">
+                  <div className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-primary/25" />
+                  <div data-fill className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 rounded-full bg-primary" />
+                  <span
+                    data-knob
+                    aria-hidden
+                    className="absolute left-0 top-1/2 h-5 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_7px] shadow-primary/20 sm:h-5.5 sm:w-12"
+                  />
+                </div>
+                <ol className="mt-3.5 flex justify-between">
+                  {STEPS.map((s, i) => (
+                    <li key={s.key} data-label={i} className="eyebrow text-[0.6875rem] font-medium tracking-[0.12em] sm:text-xs">
+                      {s.key}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+
+            {/* the photo frame (the hero photo lands here) */}
+            <div className="relative order-1 flex min-h-0 items-center justify-center lg:order-2 lg:h-full">
+              <div className="relative aspect-[4/3] h-[24svh] max-w-full sm:h-[30svh] lg:aspect-[5/6] lg:h-[72svh]">
+                <div data-method-tilt className="absolute inset-0 will-change-transform">
+                  <div
+                    data-method-photo
+                    style={{ opacity: 0 }}
+                    className="absolute inset-0 rounded-[36px] shadow-[0_40px_90px_-30px] shadow-ink/40"
+                  >
+                    <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
+                      {STEPS.map((s, i) => (
+                        <div key={s.key} data-img={i} className="absolute inset-0 overflow-hidden" style={{ zIndex: i }}>
+                          <div data-img-inner className="absolute inset-0 will-change-transform">
+                            <Image
+                              src={s.img}
+                              alt={s.alt}
+                              fill
+                              sizes="(min-width: 1024px) 45vw, 90vw"
+                              className={`object-cover ${s.pos}`}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <div className="absolute inset-0 z-10 bg-gradient-to-t from-secondary/55 via-transparent to-transparent" />
+
+                      {/* step counter chip */}
+                      <div data-chips className="absolute bottom-5 right-5 z-20 lg:bottom-7 lg:right-7">
+                        <span className="eyebrow block h-[2.1rem] overflow-hidden rounded-full border border-primary/30 bg-secondary/45 px-3 text-[0.58rem] leading-[2.1rem] backdrop-blur-md">
+                          <span data-counter className="block">
+                            {STEPS.map((s, i) => (
+                              <span key={s.key} className="block h-[2.1rem]">{pad(i + 1)} · {s.key}</span>
+                            ))}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FLOATING PHOTO (hero → method hand-off) ================= */}
+      <div
+        data-flyer
+        aria-hidden
+        style={{ visibility: "hidden" }}
+        className="pointer-events-none fixed z-30 overflow-hidden shadow-[0_40px_90px_-30px] shadow-ink/40 will-change-transform"
+      >
+        <Image src={STEPS[0].img} alt="" fill sizes="(min-width: 1024px) 45vw, 90vw" className={`object-cover ${STEPS[0].pos}`} />
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary/55 via-transparent to-transparent" />
+      </div>
+    </div>
   );
 }

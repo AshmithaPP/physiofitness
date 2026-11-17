@@ -5,6 +5,28 @@ import Image from "next/image";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
 
+import { TREATMENTS, EMPTY_FORM, FIELDS, validate, sendBooking, sendErrorMessage } from "@/lib/booking";
+
+const INPUT =
+  "w-full rounded-lg sm:rounded-xl bg-primary/10 border border-primary/20 text-primary placeholder:text-primary/45 text-xs sm:text-sm focus:outline-none focus:border-primary/60 transition-colors";
+const INPUT_ERR = "border-danger/80 focus:border-danger";
+
+function Field({ id, label, error, children }) {
+  return (
+    <div className="flex flex-col text-left">
+      <label htmlFor={id} className="text-[0.6875rem] sm:text-xs text-primary/80 mb-0.5 sm:mb-1 font-light">
+        {label}
+      </label>
+      {children}
+      {error && (
+        <p id={`${id}-error`} className="mt-1 text-[0.625rem] sm:text-[0.6875rem] leading-tight text-danger">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=New+No.+128+N+Usman+Road+T.+Nagar+Chennai+600017";
 
@@ -16,14 +38,17 @@ export default function ContactShowcase() {
   const stageRef = useRef(null);
 
   // Form states
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
+  const formRef = useRef(null);
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  const [touched, setTouched] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sendError, setSendError] = useState("");
+
+  const errors = validate(formData);
+  const shownError = (k) => (touched[k] ? errors[k] : undefined);
+  const update = (k) => (e) => setFormData((f) => ({ ...f, [k]: e.target.value }));
+  const touch = (k) => () => setTouched((t) => ({ ...t, [k]: true }));
 
   // GSAP Animation: Physiotherapist on left pulling the form from Right to Center
   useGSAP(
@@ -100,13 +125,34 @@ export default function ContactShowcase() {
     { scope: root }
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSendError("");
+    setTouched({ name: true, phone: true, treatment: true, message: true });
+
+    const firstInvalid = FIELDS.find((k) => errors[k]);
+    if (firstInvalid) {
+      formRef.current?.querySelector(`[name="${firstInvalid}"]`)?.focus();
+      return;
+    }
+
+    // bots fill the hidden honeypot: pretend it worked, send nothing
+    if (formData._honey) {
       setSubmitted(true);
-    }, 600);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await sendBooking(formData, "Contact page");
+      setSubmitted(true);
+      setFormData(EMPTY_FORM);
+      setTouched({});
+    } catch (err) {
+      setSendError(sendErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -117,10 +163,10 @@ export default function ContactShowcase() {
         ref={stageRef}
         className="relative w-full pt-24 xs:pt-28 sm:pt-36 pb-16 sm:pb-24 px-3 xs:px-4 sm:px-[var(--gutter)] mx-auto max-w-[110rem] overflow-hidden"
       >
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] xl:grid-cols-[0.75fr_1.25fr] gap-10 lg:gap-14 xl:gap-18 items-center">
+        <div className="w-full grid grid-cols-1 xl:grid-cols-[0.75fr_1.25fr] gap-10 xl:gap-18 items-center">
           
           {/* ================= LEFT SIDE: STUDIO ADDRESS & DETAILS (Unboxed - No Cards) + MAP ================= */}
-          <div className="flex flex-col gap-6 sm:gap-8 text-left order-2 lg:order-1 px-1 sm:px-0">
+          <div className="flex flex-col gap-6 sm:gap-8 text-left order-2 xl:order-1 px-1 sm:px-0">
             
             {/* Studio Address */}
             <div className="text-left">
@@ -136,7 +182,7 @@ export default function ContactShowcase() {
             </div>
 
             {/* Call Us & Email (Clean text, no card borders) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)] gap-5 sm:gap-x-10 sm:gap-y-6 pt-1">
               {/* Call Us */}
               <div className="text-left">
                 <span className="eyebrow block text-primary/65 text-[0.6875rem] font-semibold tracking-wider mb-1">
@@ -144,7 +190,8 @@ export default function ContactShowcase() {
                 </span>
                 <a
                   href="tel:+917200831203"
-                  className="font-display text-lg sm:text-xl font-medium text-primary hover:underline underline-offset-4 block"
+                  draggable={false}
+                  className="font-display text-lg sm:text-xl font-medium text-primary hover:underline underline-offset-4 block select-text"
                 >
                   +91 7200831203
                 </a>
@@ -160,7 +207,8 @@ export default function ContactShowcase() {
                 </span>
                 <a
                   href="mailto:afrozmeeran13@gmail.com"
-                  className="font-display text-base sm:text-lg font-medium text-primary hover:underline underline-offset-4 block break-all"
+                  draggable={false}
+                  className="font-display text-base sm:text-lg font-medium text-primary hover:underline underline-offset-4 block break-all select-text"
                 >
                   afrozmeeran13@gmail.com
                 </a>
@@ -216,12 +264,12 @@ export default function ContactShowcase() {
           </div>
 
           {/* ================= RIGHT SIDE: ANIMATED FORM WITH PHYSIOTHERAPIST ON LEFT ================= */}
-          <div className="relative w-full flex items-center justify-center order-1 lg:order-2">
+          <div className="relative w-full flex items-center justify-center order-1 xl:order-2">
             
             {/* Unified Pulling Group (Physiotherapist + Form Card) - Aligned to floor baseline */}
             <div
               ref={pullGroupRef}
-              className="relative flex items-end justify-center w-full max-w-2xl lg:max-w-none will-change-transform"
+              className="relative flex items-end justify-center w-full max-w-3xl xl:max-w-none will-change-transform"
             >
               
               {/* Physiotherapist Character: Facing the user, hands gripping card edge, feet grounded on floor baseline */}
@@ -233,7 +281,7 @@ export default function ContactShowcase() {
                 <div className="absolute -bottom-1.5 left-4 right-4 h-3 bg-ink/60 rounded-full blur-[4px] pointer-events-none" />
 
                 <Image
-                  src="/images/contact/physiotherapist-pull-blue.png"
+                  src="/images/contact/physiotherapist.png"
                   alt="Physiotherapist facing user and holding the form card into position"
                   fill
                   sizes="(min-width: 1280px) 380px, (min-width: 1024px) 350px, (min-width: 640px) 270px, 170px"
@@ -282,106 +330,141 @@ export default function ContactShowcase() {
                   </div>
 
                   {submitted ? (
-                    <div className="py-6 sm:py-8 text-center flex flex-col items-center">
+                    <div className="py-6 sm:py-8 text-center flex flex-col items-center" role="status">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-secondary flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
                         <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <h3 className="font-display text-lg sm:text-xl font-medium text-primary">
-                        Message received!
+                        Request received!
                       </h3>
                       <p className="text-xs sm:text-sm text-primary/80 mt-1.5 sm:mt-2 max-w-xs font-light leading-relaxed">
-                        Thank you. We usually reply within a few hours to your email.
+                        Thank you. We&apos;ll call you shortly to confirm your appointment.
                       </p>
                       <button
                         type="button"
                         onClick={() => {
                           setSubmitted(false);
-                          setFormData({ name: "", email: "", phone: "", message: "" });
+                          setFormData(EMPTY_FORM);
+                          setTouched({});
                         }}
                         className="mt-4 sm:mt-6 text-xs text-primary/90 underline underline-offset-4 hover:text-primary"
                         suppressHydrationWarning
                       >
-                        Send another message
+                        Book another appointment
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-2 xs:gap-2.5 sm:gap-3.5" suppressHydrationWarning>
+                    <form ref={formRef} onSubmit={handleSubmit} noValidate className="flex flex-col gap-2 sm:gap-3" suppressHydrationWarning>
+                      {/* honeypot: hidden from people, bots fill it */}
+                      <input
+                        type="text"
+                        name="_honey"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        aria-hidden
+                        value={formData._honey}
+                        onChange={update("_honey")}
+                        className="hidden"
+                      />
+
                       {/* Name */}
-                      <div className="flex flex-col text-left">
-                        <label htmlFor="contact-name" className="text-[0.6875rem] sm:text-xs text-primary/80 mb-0.5 sm:mb-1 font-light">
-                          Name
-                        </label>
+                      <Field id="contact-name" label="Name" error={shownError("name")}>
                         <input
                           id="contact-name"
                           name="name"
                           type="text"
                           required
+                          maxLength={60}
                           autoComplete="name"
                           placeholder="Your name"
                           value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="w-full h-8 xs:h-9 sm:h-10 px-3 rounded-lg sm:rounded-xl bg-primary/10 border border-primary/20 text-primary placeholder:text-primary/45 text-xs sm:text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                          onChange={update("name")}
+                          onBlur={touch("name")}
+                          aria-invalid={!!shownError("name")}
+                          aria-describedby={shownError("name") ? "contact-name-error" : undefined}
+                          className={`${INPUT} h-8 min-[400px]:h-9 sm:h-10 px-3 ${shownError("name") ? INPUT_ERR : ""}`}
                           suppressHydrationWarning
                         />
-                      </div>
+                      </Field>
 
-                      {/* Email */}
-                      <div className="flex flex-col text-left">
-                        <label htmlFor="contact-email" className="text-[0.6875rem] sm:text-xs text-primary/80 mb-0.5 sm:mb-1 font-light">
-                          Email
-                        </label>
-                        <input
-                          id="contact-email"
-                          name="email"
-                          type="email"
-                          required
-                          autoComplete="email"
-                          placeholder="name@example.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="w-full h-8 xs:h-9 sm:h-10 px-3 rounded-lg sm:rounded-xl bg-primary/10 border border-primary/20 text-primary placeholder:text-primary/45 text-xs sm:text-sm focus:outline-none focus:border-primary/60 transition-colors"
-                          suppressHydrationWarning
-                        />
-                      </div>
-
-                      {/* Phone (Optional) */}
-                      <div className="flex flex-col text-left">
-                        <label htmlFor="contact-phone" className="text-[0.6875rem] sm:text-xs text-primary/80 mb-0.5 sm:mb-1 font-light">
-                          Phone (optional)
-                        </label>
+                      {/* Phone number */}
+                      <Field id="contact-phone" label="Phone number" error={shownError("phone")}>
                         <input
                           id="contact-phone"
                           name="phone"
                           type="tel"
+                          inputMode="tel"
+                          required
+                          maxLength={16}
                           autoComplete="tel"
                           placeholder="+91 98765 43210"
                           value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="w-full h-8 xs:h-9 sm:h-10 px-3 rounded-lg sm:rounded-xl bg-primary/10 border border-primary/20 text-primary placeholder:text-primary/45 text-xs sm:text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                          onChange={(e) => setFormData((f) => ({ ...f, phone: e.target.value.replace(/[^\d+\s-]/g, "") }))}
+                          onBlur={touch("phone")}
+                          aria-invalid={!!shownError("phone")}
+                          aria-describedby={shownError("phone") ? "contact-phone-error" : undefined}
+                          className={`${INPUT} h-8 min-[400px]:h-9 sm:h-10 px-3 ${shownError("phone") ? INPUT_ERR : ""}`}
                           suppressHydrationWarning
                         />
-                      </div>
+                      </Field>
+
+                      {/* Treatment */}
+                      <Field id="contact-treatment" label="Treatment" error={shownError("treatment")}>
+                        <div className="relative">
+                          <select
+                            id="contact-treatment"
+                            name="treatment"
+                            required
+                            value={formData.treatment}
+                            onChange={update("treatment")}
+                            onBlur={touch("treatment")}
+                            aria-invalid={!!shownError("treatment")}
+                            aria-describedby={shownError("treatment") ? "contact-treatment-error" : undefined}
+                            className={`${INPUT} h-8 min-[400px]:h-9 sm:h-10 appearance-none pl-3 pr-9 cursor-pointer ${formData.treatment ? "" : "text-primary/45"} ${shownError("treatment") ? INPUT_ERR : ""}`}
+                            suppressHydrationWarning
+                          >
+                            <option value="" disabled className="bg-secondary text-primary/60">
+                              Select a treatment
+                            </option>
+                            {TREATMENTS.map((t) => (
+                              <option key={t} value={t} className="bg-secondary text-primary">
+                                {t}
+                              </option>
+                            ))}
+                          </select>
+                          <svg aria-hidden className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-primary/70" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 7.5l5 5 5-5" />
+                          </svg>
+                        </div>
+                      </Field>
 
                       {/* Message */}
-                      <div className="flex flex-col text-left">
-                        <label htmlFor="contact-message" className="text-[0.6875rem] sm:text-xs text-primary/80 mb-0.5 sm:mb-1 font-light">
-                          Message
-                        </label>
+                      <Field id="contact-message" label="Message" error={shownError("message")}>
                         <textarea
                           id="contact-message"
                           name="message"
                           rows={2}
                           required
+                          maxLength={1000}
                           autoComplete="off"
                           placeholder="How can we help your recovery?"
                           value={formData.message}
-                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                          className="w-full p-2 xs:p-2.5 rounded-lg sm:rounded-xl bg-primary/10 border border-primary/20 text-primary placeholder:text-primary/45 text-xs sm:text-sm focus:outline-none focus:border-primary/60 transition-colors resize-none"
+                          onChange={update("message")}
+                          onBlur={touch("message")}
+                          aria-invalid={!!shownError("message")}
+                          aria-describedby={shownError("message") ? "contact-message-error" : undefined}
+                          className={`${INPUT} p-2 min-[400px]:p-2.5 resize-none ${shownError("message") ? INPUT_ERR : ""}`}
                           suppressHydrationWarning
                         />
-                      </div>
+                      </Field>
+
+                      {sendError && (
+                        <p role="alert" className="text-[0.6875rem] sm:text-xs text-danger leading-snug">
+                          {sendError}
+                        </p>
+                      )}
 
                       {/* Submit Button */}
                       <div className="mt-1 flex justify-start">
@@ -392,7 +475,7 @@ export default function ContactShowcase() {
                             className="btn btn-light w-full h-10 sm:h-11 whitespace-nowrap px-5 text-xs sm:text-sm font-medium shadow-md hover:shadow-xl transition-all disabled:opacity-60"
                             suppressHydrationWarning
                           >
-                            {isSubmitting ? "Sending..." : "Send message"}
+                            {isSubmitting ? "Sending..." : "Book appointment"}
                           </button>
                         </Magnetic>
                       </div>

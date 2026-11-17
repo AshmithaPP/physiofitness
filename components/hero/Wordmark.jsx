@@ -12,7 +12,7 @@ import Image from "next/image";
  * to the full-screen intro — which lets the intro logo fly into the navbar and
  * land as an exact match.
  */
-export default function Wordmark({ className = "", markClassName = "", priority = false, onLight = false }) {
+export default function Wordmark({ className = "", markClassName = "", priority = false, onLight = false, markOnly = false }) {
   return (
     <span className={`inline-flex items-center gap-[0.32em] whitespace-nowrap font-display leading-none ${className}`}>
       <span
@@ -33,10 +33,15 @@ export default function Wordmark({ className = "", markClassName = "", priority 
           draggable={false}
         />
       </span>
-      <span className="inline-flex items-baseline">
-        <span data-wm className="font-semibold tracking-[-0.025em]">Physiofit</span>
-        <span data-wm className="font-light tracking-[-0.015em] opacity-70">.studio</span>
-      </span>
+      {markOnly ? (
+        // logo only (navbar, footer); the name stays available to screen readers
+        <span className="sr-only">Physiofit Studio</span>
+      ) : (
+        <span data-wm-text className="inline-flex items-baseline">
+          <span data-wm className="font-semibold tracking-[-0.025em]">Physiofit</span>
+          <span data-wm className="font-light tracking-[-0.015em] opacity-70">.studio</span>
+        </span>
+      )}
     </span>
   );
 }

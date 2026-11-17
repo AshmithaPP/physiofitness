@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import StoryStage from "./StoryStage";
 import ServicesDrop from "@/components/home/ServicesDrop";
 import Approach from "@/components/home/Approach";
+import FaqBooking from "@/components/home/FaqBooking";
 import Visit from "@/components/home/Visit";
 import Footer from "@/components/home/Footer";
 
@@ -30,6 +31,7 @@ export default function Hero() {
         <StoryStage ready={ready} />
         <ServicesDrop ready={ready} />
         <Approach ready={ready} />
+        <FaqBooking ready={ready} />
         <Visit ready={ready} />
       </main>
       <Footer ready={ready} />

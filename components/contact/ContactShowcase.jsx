@@ -227,13 +227,13 @@ export default function ContactShowcase() {
               {/* Physiotherapist Character: Facing the user, hands gripping card edge, feet grounded on floor baseline */}
               <div
                 ref={physioRef}
-                className="shrink-0 h-[230px] xs:h-[260px] sm:h-[340px] md:h-[400px] lg:h-[450px] xl:h-[480px] w-auto aspect-[614/800] relative z-30 pointer-events-none -mr-9 xs:-mr-11 sm:-mr-14 md:-mr-18 lg:-mr-22 mb-0 will-change-transform bg-transparent"
+                className="shrink-0 h-[200px] min-[400px]:h-[230px] sm:h-[340px] md:h-[400px] lg:h-[450px] xl:h-[480px] w-auto aspect-[614/800] relative z-30 pointer-events-none -mr-8 min-[400px]:-mr-9 sm:-mr-14 md:-mr-18 lg:-mr-22 mb-0 will-change-transform bg-transparent"
               >
                 {/* Contact shadow on floor under shoes */}
                 <div className="absolute -bottom-1.5 left-4 right-4 h-3 bg-secondary/25 rounded-full blur-[4px] pointer-events-none" />
 
                 <Image
-                  src="/images/contact/physiotherapist-pull-clean.png"
+                  src="/images/contact/physiotherapist-pull-blue.png"
                   alt="Physiotherapist facing user and holding the form card into position"
                   fill
                   sizes="(min-width: 1280px) 380px, (min-width: 1024px) 350px, (min-width: 640px) 270px, 170px"
@@ -245,7 +245,7 @@ export default function ContactShowcase() {
               {/* Dual-Pane Form Card */}
               <div
                 ref={cardRef}
-                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] xs:max-w-[calc(100%-65px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-secondary/25 border border-secondary/20 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
+                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-secondary/25 border border-secondary/20 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
               >
                 
                 {/* Left Pane: Walking Rehabilitation Photo (User Attached 2nd Image) */}
@@ -274,7 +274,7 @@ export default function ContactShowcase() {
                 </div>
 
                 {/* Right Pane: Contact Form Fields (Replay Button Removed) */}
-                <div className="p-3.5 xs:p-4 sm:p-6 md:p-8 flex flex-col justify-center text-left bg-secondary">
+                <div className="p-3.5 pl-10 min-[400px]:pl-11 sm:p-6 sm:pl-16 md:p-8 flex flex-col justify-center text-left bg-secondary">
                   <div className="mb-2.5 sm:mb-4 text-left">
                     <h2 className="font-display text-base xs:text-lg sm:text-xl md:text-2xl font-medium text-primary tracking-[-0.025em]">
                       Send a message

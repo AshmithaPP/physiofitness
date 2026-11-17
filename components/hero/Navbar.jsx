@@ -126,7 +126,7 @@ export default function Navbar() {
         <div
           aria-hidden
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden"
+          className="fixed inset-0 z-30 bg-ink/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden"
         />
       )}
 
@@ -134,7 +134,7 @@ export default function Navbar() {
       <div
         id="mobile-menu"
         ref={menu}
-        className="fixed inset-x-[var(--gutter)] top-[calc(3.5rem+1.25rem)] z-40 mx-auto hidden max-w-sm flex-col rounded-3xl border border-primary/20 bg-secondary/95 p-3 text-primary shadow-[0_25px_60px_-15px] shadow-black/60 backdrop-blur-2xl lg:hidden"
+        className="fixed inset-x-[var(--gutter)] top-[calc(3.5rem+1.25rem)] z-40 mx-auto hidden max-w-sm flex-col rounded-3xl border border-primary/20 bg-secondary/95 p-3 text-primary shadow-[0_25px_60px_-15px] shadow-ink/60 backdrop-blur-2xl lg:hidden"
       >
         <ul className="flex flex-col gap-1">
           {[...LINKS, { label: "Book appointment", href: "/book" }].map((l) => {

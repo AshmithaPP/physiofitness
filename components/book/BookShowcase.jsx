@@ -295,7 +295,7 @@ export default function BookShowcase() {
             <Card title="Pick a date & time" hint="Times shown in IST">
               <div className="grid gap-7 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:gap-8">
                 {/* calendar */}
-                <div className="min-w-0 rounded-3xl border-2 border-secondary/15 bg-primary p-3 shadow-[0_18px_40px_-28px_rgba(6,78,59,0.45)] min-[400px]:p-4 sm:p-5">
+                <div className="min-w-0 rounded-3xl border-2 border-secondary/15 bg-primary p-3 shadow-[0_18px_40px_-28px] shadow-secondary/45 min-[400px]:p-4 sm:p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <p data-cal-title className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
                       {month ? MONTHS[month.m] : " "}
@@ -345,12 +345,12 @@ export default function BookShowcase() {
                               aria-label={`${c.d} ${MONTHS[month.m]}${disabled ? ", unavailable" : `, ${c.open} slots open`}`}
                               className={`group relative flex aspect-square w-full flex-col items-center justify-center rounded-xl border-2 text-sm transition-all duration-300 ease-(--ease-out-expo) active:scale-90 disabled:cursor-not-allowed sm:rounded-2xl sm:text-base ${
                                 on
-                                  ? "z-10 scale-[1.08] border-secondary bg-secondary text-primary shadow-[0_14px_28px_-12px_rgba(6,78,59,0.8)]"
+                                  ? "z-10 scale-[1.08] border-secondary bg-secondary text-primary shadow-[0_14px_28px_-12px] shadow-secondary/80"
                                   : disabled
                                   ? "border-transparent bg-mist/50 text-secondary/25"
                                   : c.isToday
                                   ? "border-secondary bg-primary font-bold hover:bg-mist"
-                                  : "border-secondary/10 bg-primary font-semibold hover:-translate-y-0.5 hover:border-secondary/60 hover:shadow-[0_10px_20px_-14px_rgba(6,78,59,0.6)]"
+                                  : "border-secondary/10 bg-primary font-semibold hover:-translate-y-0.5 hover:border-secondary/60 hover:shadow-[0_10px_20px_-14px] hover:shadow-secondary/60"
                               }`}
                               suppressHydrationWarning
                             >
@@ -417,7 +417,7 @@ export default function BookShowcase() {
                                       aria-label={`${s.label}${off ? (s.status === "booked" ? ", booked" : ", passed") : ""}`}
                                       className={`h-11 rounded-xl border-2 text-[0.8125rem] font-semibold transition-all duration-300 sm:h-12 sm:text-sm ${
                                         on
-                                          ? "border-secondary bg-secondary text-primary shadow-[0_10px_24px_-12px_rgba(6,78,59,0.8)]"
+                                          ? "border-secondary bg-secondary text-primary shadow-[0_10px_24px_-12px] shadow-secondary/80"
                                           : off
                                           ? "cursor-not-allowed border-transparent bg-mist/60 text-secondary/30 line-through"
                                           : "border-secondary/15 bg-primary hover:-translate-y-0.5 hover:border-secondary/60 active:scale-95"
@@ -512,8 +512,8 @@ function Card({ title, hint, tone = "light", className = "", children }) {
       data-card
       className={`relative isolate min-w-0 overflow-hidden rounded-3xl p-4 min-[400px]:p-5 sm:rounded-4xl sm:p-7 ${
         dark
-          ? "bg-secondary text-primary shadow-[0_40px_80px_-30px_rgba(6,78,59,0.7)]"
-          : "border border-line bg-primary/85 shadow-[0_30px_60px_-40px_rgba(6,78,59,0.35)] backdrop-blur-xl"
+          ? "bg-secondary text-primary shadow-[0_40px_80px_-30px] shadow-secondary/70"
+          : "border border-line bg-primary/85 shadow-[0_30px_60px_-40px] shadow-secondary/35 backdrop-blur-xl"
       } ${className}`}
     >
       {dark && (
@@ -577,7 +577,7 @@ function Confirmation({ date, hour, name, code, onReset }) {
             className={`absolute top-1/2 left-1/2 -mt-1 -ml-1 h-2 w-2 opacity-0 ${i % 3 ? "rounded-full" : "rounded-[2px]"} ${i % 2 ? "bg-secondary" : "bg-secondary/40"}`}
           />
         ))}
-        <span data-done-badge className="relative flex h-20 w-20 items-center justify-center rounded-full bg-secondary text-primary shadow-[0_20px_50px_-15px_rgba(6,78,59,0.7)] sm:h-24 sm:w-24">
+        <span data-done-badge className="relative flex h-20 w-20 items-center justify-center rounded-full bg-secondary text-primary shadow-[0_20px_50px_-15px] shadow-secondary/70 sm:h-24 sm:w-24">
           <svg viewBox="0 0 24 24" className="h-9 w-9 sm:h-11 sm:w-11" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <polyline data-check points="20 6 9 17 4 12" style={{ strokeDasharray: 24, strokeDashoffset: 24 }} />
           </svg>
@@ -592,10 +592,10 @@ function Confirmation({ date, hour, name, code, onReset }) {
         We&apos;ve held your slot. Our front desk will call to confirm within a few hours.
       </p>
 
-      <div data-done-ticket className="mt-10 w-full max-w-md overflow-hidden rounded-[1.75rem] bg-secondary p-5 text-left text-primary shadow-[0_40px_80px_-30px_rgba(6,78,59,0.65)] sm:p-6">
+      <div data-done-ticket className="mt-10 w-full max-w-md overflow-hidden rounded-[1.75rem] bg-secondary p-5 text-left text-primary shadow-[0_40px_80px_-30px] shadow-secondary/65 sm:p-6">
         <div className="flex items-center justify-between">
           <span className="eyebrow text-primary/60">Appointment</span>
-          <span className="font-mono text-xs text-primary/70">{code}</span>
+          <span className="font-roboto tabular-nums text-xs text-primary/70">{code}</span>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-4">
           <div>

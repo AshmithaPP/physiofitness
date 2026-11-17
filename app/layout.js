@@ -15,9 +15,6 @@ export const metadata = {
     "A modern clinical studio in T. Nagar combining physiotherapy, targeted rehab, functional fitness and restorative foot spa — all under one roof.",
 };
 
-export const viewport = {
-  themeColor: "#064e3b",
-};
 
 export default function RootLayout({ children }) {
   return (

@@ -148,7 +148,7 @@ export default function AboutShowcase() {
           {GALLERY_IMAGES.map((img, i) => (
             <div
               key={img.src}
-              className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_16px_36px_rgba(6,78,59,0.18)] border-2 sm:border-4 border-primary bg-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_16px_36px] shadow-secondary/18 border-2 sm:border-4 border-primary bg-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
               <Image
                 src={img.src}
@@ -220,7 +220,7 @@ export default function AboutShowcase() {
             </div>
 
             {/* Overlapping Floating Card at Bottom */}
-            <div className="absolute -bottom-2 sm:-bottom-4 left-4 right-4 sm:left-10 sm:right-10 bg-primary rounded-2xl shadow-[0_16px_36px_rgba(6,78,59,0.12)] p-4 sm:p-5 border border-line text-center">
+            <div className="absolute -bottom-2 sm:-bottom-4 left-4 right-4 sm:left-10 sm:right-10 bg-primary rounded-2xl shadow-[0_16px_36px] shadow-secondary/12 p-4 sm:p-5 border border-line text-center">
               <p className="font-display font-medium text-xs sm:text-sm text-secondary leading-snug">
                 &ldquo;You should leave every session feeling steadier than you walked in. That&rsquo;s the whole standard.&rdquo;
               </p>

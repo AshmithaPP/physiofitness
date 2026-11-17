@@ -410,7 +410,7 @@ export default function StoryStage({ ready }) {
       {/* ================= TRAVELLING PHOTO ================= */}
       <div
         data-photo
-        className="invisible absolute z-40 overflow-hidden shadow-[0_40px_90px_-30px] shadow-black/40 will-change-transform"
+        className="invisible absolute z-40 overflow-hidden shadow-[0_40px_90px_-30px] shadow-ink/40 will-change-transform"
       >
         <div data-photo-clip className="absolute inset-0 overflow-hidden rounded-[inherit]">
           <div data-photo-zoom className="absolute inset-0">

@@ -43,7 +43,7 @@ export default function Footer({ ready = true }) {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
           <div data-foot-in className="max-w-md sm:col-span-2 lg:col-span-1">
             <Link href="/" aria-label="Physiofit Studio home" className="inline-block">
-              <Wordmark tone="dark" className="text-[1.5rem] sm:text-[1.75rem]" />
+              <Wordmark onLight className="text-[1.5rem] sm:text-[1.75rem]" />
             </Link>
             <p className="mt-5 font-display text-[clamp(1.25rem,1.8vw,1.625rem)] font-medium leading-[1.2] tracking-[-0.025em]">
               Restore your health, rebuild your strength,{" "}

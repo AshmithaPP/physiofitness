@@ -237,7 +237,7 @@ export default function ContactShowcase() {
                   alt="Physiotherapist facing user and holding the form card into position"
                   fill
                   sizes="(min-width: 1280px) 380px, (min-width: 1024px) 350px, (min-width: 640px) 270px, 170px"
-                  className="object-contain object-bottom drop-shadow-[4px_10px_20px_rgba(0,0,0,0.22)] bg-transparent"
+                  className="object-contain object-bottom drop-shadow-[4px_10px_20px_color-mix(in_oklch,var(--brand-ink)_22%,transparent)] bg-transparent"
                   priority
                 />
               </div>
@@ -245,7 +245,7 @@ export default function ContactShowcase() {
               {/* Dual-Pane Form Card */}
               <div
                 ref={cardRef}
-                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] xs:max-w-[calc(100%-65px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px_rgba(6,78,59,0.25)] border border-secondary/20 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
+                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] xs:max-w-[calc(100%-65px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-secondary/25 border border-secondary/20 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
               >
                 
                 {/* Left Pane: Walking Rehabilitation Photo (User Attached 2nd Image) */}

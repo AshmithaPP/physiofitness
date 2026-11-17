@@ -8,13 +8,15 @@
 
 :root {
   --brand-primary: #fafaf9;
-  --brand-secondary: #064e3b;
+  --brand-secondary: #082554; /* deep navy: keeps the logo's white figure and blue arcs visible */
 
   /* derived — mixes of the two brand colours only */
   --brand-secondary-soft: color-mix(in oklch, var(--brand-secondary) 72%, var(--brand-primary));
   --brand-mist: color-mix(in oklch, var(--brand-secondary) 6%, var(--brand-primary));
   --brand-line: color-mix(in oklch, var(--brand-secondary) 14%, transparent);
   --brand-line-inverse: color-mix(in oklch, var(--brand-primary) 22%, transparent);
+  /* shadow / overlay ink — near-black tinted with the brand */
+  --brand-ink: color-mix(in oklch, var(--brand-secondary) 18%, black);
 
   /* motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -32,11 +34,13 @@
   --color-mist: var(--brand-mist);
   --color-line: var(--brand-line);
   --color-line-inverse: var(--brand-line-inverse);
+  --color-ink: var(--brand-ink); /* shadows & dark overlays → shadow-ink/40, bg-ink/40 */
 
   /* fonts → Roboto font only */
   --font-roboto: var(--font-roboto), "Roboto", sans-serif;
   --font-display: var(--font-roboto), "Roboto", sans-serif;
   --font-sans: var(--font-roboto), "Roboto", sans-serif;
+  --font-mono: var(--font-roboto), "Roboto", sans-serif;
 
   /* fluid type scale → text-display, text-h1 … */
   --text-mega: clamp(4.5rem, 17vw, 15rem);

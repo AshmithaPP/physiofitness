@@ -281,7 +281,7 @@ export default function ContactShowcase() {
                 <div className="absolute -bottom-1.5 left-4 right-4 h-3 bg-ink/60 rounded-full blur-[4px] pointer-events-none" />
 
                 <Image
-                  src="/images/contact/physiotherapist.png"
+                  src="/images/contact/physiotherapist-v3.png"
                   alt="Physiotherapist facing user and holding the form card into position"
                   fill
                   sizes="(min-width: 1280px) 380px, (min-width: 1024px) 350px, (min-width: 640px) 270px, 170px"

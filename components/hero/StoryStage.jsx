@@ -97,20 +97,13 @@ export default function StoryStage({ ready }) {
       const navBar = document.querySelector("[data-navbar]");
 
       const heroBox = () => boxIn(heroSlot, stage);
-      // The intro logo (icon + name) flies so its ICON lands exactly on the navbar's
-      // icon; the name fades out on the way, since the navbar shows the icon only.
-      const logoMark = logo.querySelector("[data-wm-mark] img");
       const logoFit = () => {
-        const b = boxIn(logo, stage); // the whole flying logo; it scales about its centre
-        const m = boxIn(logoMark, stage);
-        const t = (navLogo.querySelector("img") ?? navLogo).getBoundingClientRect(); // stage == viewport while pinned
-        const s = t.width / m.w;
-        const cx = b.x + b.w / 2;
-        const cy = b.y + b.h / 2;
+        const b = boxIn(logo, stage);
+        const t = navLogo.getBoundingClientRect(); // stage == viewport while pinned
         return {
-          x: t.left + t.width / 2 - cx - s * (m.x + m.w / 2 - cx),
-          y: t.top + t.height / 2 - cy - s * (m.y + m.h / 2 - cy),
-          scale: s,
+          x: t.left + t.width / 2 - (b.x + b.w / 2),
+          y: t.top + t.height / 2 - (b.y + b.h / 2),
+          scale: t.width / b.w,
         };
       };
 
@@ -254,7 +247,6 @@ export default function StoryStage({ ready }) {
           { x: () => logoFit().x, y: () => logoFit().y, scale: () => logoFit().scale, duration: 0.9 },
           W
         )
-        .fromTo(q("[data-fly-logo] [data-wm-text]"), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.45, ease: "power1.out" }, W + 0.1)
         .set(logo, { autoAlpha: 0 }, W + 0.9)
         .set(navLogo, { autoAlpha: 1 }, W + 0.9)
         .fromTo(navItems, { autoAlpha: 0, y: -14 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, W + 0.75)

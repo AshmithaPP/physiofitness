@@ -275,7 +275,7 @@ export default function ContactShowcase() {
               {/* Physiotherapist Character: Facing the user, hands gripping card edge, feet grounded on floor baseline */}
               <div
                 ref={physioRef}
-                className="shrink-0 h-[200px] min-[400px]:h-[230px] sm:h-[340px] md:h-[400px] lg:h-[450px] xl:h-[480px] w-auto aspect-[614/800] relative z-30 pointer-events-none -mr-8 min-[400px]:-mr-9 sm:-mr-14 md:-mr-18 lg:-mr-22 mb-0 will-change-transform bg-transparent"
+                className="shrink-0 h-[150px] min-[400px]:h-[170px] sm:h-[300px] md:h-[380px] lg:h-[430px] xl:h-[470px] w-auto aspect-[598/800] relative z-30 pointer-events-none -mr-1.5 sm:-mr-3 md:-mr-4 xl:-mr-[18px] mb-0 will-change-transform bg-transparent"
               >
                 {/* Contact shadow on floor under shoes */}
                 <div className="absolute -bottom-1.5 left-4 right-4 h-3 bg-ink/60 rounded-full blur-[4px] pointer-events-none" />
@@ -293,7 +293,7 @@ export default function ContactShowcase() {
               {/* Dual-Pane Form Card */}
               <div
                 ref={cardRef}
-                className="relative z-20 w-full min-w-0 max-w-[calc(100%-55px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-ink/70 border border-primary/15 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
+                className="relative z-20 w-full min-w-0 sm:max-w-xl md:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_60px_-15px] shadow-ink/70 border border-primary/15 bg-secondary text-primary grid grid-cols-1 md:grid-cols-[1fr_1.15fr]"
               >
                 
                 {/* Left Pane: Walking Rehabilitation Photo (User Attached 2nd Image) */}
@@ -307,8 +307,6 @@ export default function ContactShowcase() {
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/30 to-transparent md:bg-gradient-to-r md:from-transparent md:via-secondary/25 md:to-secondary" />
-                  {/* Left-edge shade: hides the bright window behind the physiotherapist's hands on every breakpoint */}
-                  <div className="absolute inset-y-0 left-0 w-2/5 sm:w-1/3 bg-gradient-to-r from-secondary via-secondary/70 to-transparent pointer-events-none" />
                   
                   <div className="absolute bottom-2.5 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 text-left">
                     <span className="eyebrow inline-block bg-primary text-secondary px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[0.5625rem] sm:text-[0.625rem] font-semibold mb-1 sm:mb-2 shadow-sm">
@@ -322,7 +320,7 @@ export default function ContactShowcase() {
                 </div>
 
                 {/* Right Pane: Contact Form Fields (Replay Button Removed) */}
-                <div className="p-3.5 pl-10 min-[400px]:pl-11 sm:p-6 sm:pl-16 md:p-8 flex flex-col justify-center text-left bg-secondary">
+                <div className="p-3.5 sm:p-6 md:p-8 flex flex-col justify-center text-left bg-secondary">
                   <div className="mb-2.5 sm:mb-4 text-left">
                     <h2 className="font-display text-base xs:text-lg sm:text-xl md:text-2xl font-medium text-primary tracking-[-0.025em]">
                       Send a message

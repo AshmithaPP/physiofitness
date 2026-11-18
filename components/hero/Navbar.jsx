@@ -74,8 +74,7 @@ export default function Navbar() {
         <Link href="/" data-nav-logo aria-label="Physiofit Studio home" className="relative z-10">
           <Wordmark
             priority
-            markOnly
-            className="text-[1.4rem] md:text-[1.6rem]"
+            className="text-[1.3rem] min-[400px]:text-[1.4rem] md:text-[1.5rem]"
             markClassName="rounded-[0.3em] p-[0.12em] transition-colors duration-700 group-[.is-scrolled]/nav:bg-secondary"
           />
         </Link>

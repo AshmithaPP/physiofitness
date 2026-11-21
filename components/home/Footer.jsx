@@ -5,8 +5,7 @@ import Link from "next/link";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import Wordmark from "@/components/hero/Wordmark";
 
-const MAPS =
-  "https://www.google.com/maps/search/?api=1&query=New+No.+128+N+Usman+Road+T.+Nagar+Chennai+600017";
+const MAPS = "https://maps.app.goo.gl/iHSJiVBU1xCV8zam6";
 
 export default function Footer({ ready = true }) {
   const root = useRef(null);
@@ -62,11 +61,11 @@ export default function Footer({ ready = true }) {
               rel="noreferrer"
               className="mt-4 block text-base leading-relaxed transition-opacity duration-300 hover:opacity-70"
             >
-              New No. 128
+              New no -128
               <br />
-              N Usman Road, T. Nagar
+              Usman road, T.nagar
               <br />
-              Chennai - 600017
+              Chennai-600017
             </a>
           </div>
 
@@ -78,11 +77,18 @@ export default function Footer({ ready = true }) {
             >
               +91 7200831203
             </a>
+            <a
+              href="mailto:physiofitstudio.org@gmail.com"
+              className="mt-2 block text-xs sm:text-sm text-secondary/70 transition-opacity duration-300 hover:opacity-100 break-all"
+            >
+              physiofitstudio.org@gmail.com
+            </a>
           </div>
 
           <div data-foot-in>
             <h3 className="eyebrow text-[0.625rem] text-secondary/55">Open 7 days a week</h3>
-            <p className="mt-4 text-base">10:00 AM – 7:00 PM</p>
+            <p className="mt-4 text-base">11:00 AM – 5:00 PM</p>
+            <p className="mt-1 text-xs text-secondary/60">Sunday by Appointment only</p>
           </div>
         </div>
 

@@ -16,13 +16,15 @@ const MONTHS = [
 ];
 const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const MONTHS_AHEAD = 3; // current month + 2 more
-const OPEN_HOUR = 10;
-const CLOSE_HOUR = 19; // last slot starts at 6 PM
+const OPEN_HOUR = 11;
+const CLOSE_HOUR = 18; // 11 AM to 5 PM (last slot 5 PM)
+
+const GENDERS = ["Female", "Male", "Other", "Prefer not to say"];
 
 const PERIODS = [
-  { id: "morning", label: "Morning", from: 10, to: 12 },
+  { id: "morning", label: "Morning", from: 11, to: 12 },
   { id: "afternoon", label: "Afternoon", from: 13, to: 15 },
-  { id: "evening", label: "Evening", from: 16, to: 18 },
+  { id: "evening", label: "Evening", from: 16, to: 17 },
 ];
 
 /* ==========================================================================
@@ -81,7 +83,7 @@ export default function BookShowcase({ initialNow = null }) {
   const [monthOffset, setMonthOffset] = useState(0);
   const [dateKey, setDateKey] = useState(null);
   const [hour, setHour] = useState(null);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", notes: "" });
+  const [form, setForm] = useState({ name: "", phone: "", age: "", gender: "", email: "", notes: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | done
 
   /* ---------- calendar model ---------- */
@@ -105,9 +107,19 @@ export default function BookShowcase({ initialNow = null }) {
   const slots = useMemo(() => (dateKey && now ? slotsFor(dateKey, now) : []), [dateKey, now]);
   const openCount = slots.filter((s) => s.status === "open").length;
 
-  const detailsDone = form.name.trim().length > 1 && form.phone.replace(/\D/g, "").length >= 10;
+  const detailsDone =
+    form.name.trim().length > 1 &&
+    form.phone.replace(/\D/g, "").length >= 10 &&
+    String(form.age).trim().length > 0 &&
+    !!form.gender;
   const ready = !!(dateKey && hour !== null && detailsDone);
-  const missing = !dateKey ? "Pick a date" : hour === null ? "Pick a time" : !detailsDone ? "Add your name & phone" : null;
+  const missing = !dateKey
+    ? "Pick a date"
+    : hour === null
+    ? "Pick a time"
+    : !detailsDone
+    ? "Add your details (name, phone, age, gender)"
+    : null;
   const date = dateKey ? longDate(dateKey) : null;
 
   /* ---------- entrance + ambient motion ---------- */
@@ -236,7 +248,7 @@ export default function BookShowcase({ initialNow = null }) {
     setStatus("idle");
     setDateKey(null);
     setHour(null);
-    setForm({ name: "", phone: "", email: "", notes: "" });
+    setForm({ name: "", phone: "", age: "", gender: "", email: "", notes: "" });
   };
 
   const passCode = dateKey && hour !== null ? `PF-${dateKey.slice(5).replace("-", "")}${String(hour).padStart(2, "0")}` : "PF-—";
@@ -359,10 +371,15 @@ export default function BookShowcase({ initialNow = null }) {
                         ))}
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[0.6875rem] font-medium text-secondary/65">
-                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary" />Plenty of slots</span>
-                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary/30" />Few slots left today</span>
-                    <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-md border-2 border-secondary" />Today</span>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line/60 pt-3 text-[0.6875rem] font-medium text-secondary/70">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                      <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary" />Plenty of slots</span>
+                      <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-secondary/30" />Few slots left today</span>
+                      <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-md border-2 border-secondary" />Today</span>
+                    </div>
+                    <span className="rounded-full bg-secondary/10 px-2.5 py-0.5 text-[0.625rem] text-secondary font-semibold">
+                      Sunday by Appointment only
+                    </span>
                   </div>
                 </div>
 
@@ -383,7 +400,14 @@ export default function BookShowcase({ initialNow = null }) {
                     <div>
                       <div className="mb-4 flex items-end justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="eyebrow text-secondary/55">{date.weekday}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="eyebrow text-secondary/55">{date.weekday}</p>
+                            {date.weekday === "Sunday" && (
+                              <span className="rounded-full bg-secondary/15 px-2 py-0.5 text-[0.625rem] font-medium text-secondary">
+                                By appointment only
+                              </span>
+                            )}
+                          </div>
                           <p className="mt-1.5 truncate font-display text-base font-medium tracking-tight sm:text-lg">{date.full}</p>
                         </div>
                         <span className="shrink-0 rounded-full bg-mist px-2.5 py-1 text-[0.6875rem] font-medium">{openCount} open</span>
@@ -436,6 +460,10 @@ export default function BookShowcase({ initialNow = null }) {
               <div className="flex flex-col gap-3 sm:gap-4">
                 <Field dark id="name" label="Full name" autoComplete="name" required value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
                 <Field dark id="phone" label="Phone" type="tel" autoComplete="tel" inputMode="tel" required value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+                <div className="grid grid-cols-2 gap-3">
+                  <Field dark id="age" label="Age" type="number" inputMode="numeric" min={1} max={120} required value={form.age} onChange={(v) => setForm({ ...form, age: v })} />
+                  <Field dark id="gender" label="Gender" select options={GENDERS} required value={form.gender} onChange={(v) => setForm({ ...form, gender: v })} />
+                </div>
                 <Field dark id="email" label="Email (optional)" type="email" autoComplete="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
                 <Field dark id="notes" label="What's bothering you? (optional)" textarea value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} />
               </div>
@@ -536,7 +564,7 @@ function Card({ title, hint, tone = "light", className = "", children }) {
   );
 }
 
-function Field({ id, label, value, onChange, textarea, dark = false, className = "", ...rest }) {
+function Field({ id, label, value, onChange, textarea, select, options = [], dark = false, className = "", ...rest }) {
   const base = dark
     ? "peer w-full rounded-2xl border border-primary/20 bg-primary/[0.07] px-4 pt-6 pb-2 text-sm text-primary caret-primary outline-none transition-all duration-300 placeholder:text-transparent hover:border-primary/40 hover:bg-primary/10 focus:border-primary focus:bg-primary/[0.12] focus:shadow-[0_0_0_4px_color-mix(in_oklch,var(--brand-primary)_14%,transparent)]"
     : "peer w-full rounded-2xl border border-line bg-primary px-4 pt-6 pb-2 text-sm text-secondary outline-none transition-all duration-300 placeholder:text-transparent hover:border-secondary/40 focus:border-secondary focus:shadow-[0_0_0_4px_color-mix(in_oklch,var(--brand-secondary)_12%,transparent)]";
@@ -545,12 +573,36 @@ function Field({ id, label, value, onChange, textarea, dark = false, className =
     <div data-field className={`relative ${className}`}>
       {textarea ? (
         <textarea id={`book-${id}`} name={id} rows={3} placeholder=" " value={value} onChange={(e) => onChange(e.target.value)} className={`${base} resize-none`} suppressHydrationWarning />
+      ) : select ? (
+        <div className="relative">
+          <select
+            id={`book-${id}`}
+            name={id}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className={`${base} h-14 appearance-none cursor-pointer ${value ? "" : "text-primary/40"}`}
+            suppressHydrationWarning
+            {...rest}
+          >
+            <option value="" disabled className="bg-secondary text-primary/60">
+              Select
+            </option>
+            {options.map((opt) => (
+              <option key={opt} value={opt} className="bg-secondary text-primary">
+                {opt}
+              </option>
+            ))}
+          </select>
+          <svg aria-hidden className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 size-4 text-primary/60" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 7.5l5 5 5-5" />
+          </svg>
+        </div>
       ) : (
         <input id={`book-${id}`} name={id} placeholder=" " value={value} onChange={(e) => onChange(e.target.value)} className={`${base} h-14`} suppressHydrationWarning {...rest} />
       )}
       <label
         htmlFor={`book-${id}`}
-        className={`pointer-events-none absolute left-4 top-2.5 text-[0.6875rem] font-medium transition-all duration-300 ease-(--ease-out-expo) peer-placeholder-shown:top-[1.1rem] peer-placeholder-shown:text-sm peer-placeholder-shown:font-light peer-focus:top-2.5 peer-focus:text-[0.6875rem] peer-focus:font-medium ${labelTone}`}
+        className={`pointer-events-none absolute left-4 text-[0.6875rem] font-medium transition-all duration-300 ease-(--ease-out-expo) ${select ? "top-2 text-[0.6875rem]" : "top-2.5 peer-placeholder-shown:top-[1.1rem] peer-placeholder-shown:text-sm peer-placeholder-shown:font-light"} peer-focus:top-2.5 peer-focus:text-[0.6875rem] peer-focus:font-medium ${labelTone}`}
       >
         {label}
       </label>
@@ -602,7 +654,8 @@ function Confirmation({ date, hour, name, code, onReset }) {
             <p className="text-xs font-light text-primary/60">IST</p>
           </div>
         </div>
-        <p className="mt-5 text-xs font-light text-primary/65">New No. 128, N Usman Road, T. Nagar, Chennai · +91 72008 31203</p>
+        <p className="mt-5 text-xs font-light text-primary/65">New no -128, Usman road, T.nagar, Chennai-600017 · +91 72008 31203</p>
+        <p className="mt-1 text-[0.6875rem] font-light text-primary/55">physiofitstudio.org@gmail.com</p>
       </div>
 
       <div data-done-fade className="mt-10 flex w-full max-w-md flex-col gap-3 sm:flex-row">

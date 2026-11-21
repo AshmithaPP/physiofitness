@@ -184,7 +184,7 @@ export default function AboutShowcase() {
 
             <div data-about-in className="flex flex-col gap-3.5 sm:gap-4 text-left">
               <p className="text-xs sm:text-sm md:text-base text-secondary/85 leading-relaxed font-light text-left">
-                Our space in T. Nagar houses physiotherapy, rehab and functional fitness under one roof, with a foot spa for restoration in between. Every plan starts with a slow, honest assessment — then we design a treatment path that scales from pain relief to real, sustainable strength.
+                Our space in T. Nagar houses physiotherapy, rehab and functional fitness under one roof, with a foot spa for restoration. Every plan starts with a slow, honest assessment — then we design a treatment path that scales from pain relief to real, sustainable strength.
               </p>
               <p className="text-xs sm:text-sm md:text-base text-secondary/85 leading-relaxed font-light text-left">
                 We believe in fewer, better sessions. In evidence-based care that respects your time. And in listening to bodies as carefully as we treat them.

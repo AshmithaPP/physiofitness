@@ -13,7 +13,7 @@ const SERVICES_DATA = [
     tag: "01 · Physiotherapy",
     name: "Physiotherapy",
     summary:
-      "Hands-on musculoskeletal care. We assess pain triggers, movement patterns and posture, and treat with manual therapy, dry needling and guided exercise.",
+      "Hands-on musculoskeletal care. We assess pain triggers, movement patterns and posture, and treat with modalities and manual therapy, dry needling and guided exercise.",
     bullets: [
       "Back & neck pain relief",
       "Sports injury recovery",
@@ -35,7 +35,6 @@ const SERVICES_DATA = [
     bullets: [
       "Strength & mobility",
       "Weight & fat loss",
-      "Sport-specific training",
       "Corrective exercise",
     ],
     cta: "Book Fitness",
@@ -88,7 +87,7 @@ const SERVICES_DATA = [
     summary:
       "Traditional and modern cupping therapy to release deep muscle tension, improve circulation, and accelerate recovery from training or injury.",
     bullets: [
-      "Dry & fire cupping",
+      "Dry cupping",
       "Trigger-point release",
       "Improved circulation",
       "Post-workout recovery",

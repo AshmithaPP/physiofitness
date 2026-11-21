@@ -10,11 +10,10 @@ import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
    drifts gently (parallax) while the section is on screen.
    -------------------------------------------------------------------------- */
 
-const ADDRESS = "New No. 128, N Usman Road, T. Nagar, Chennai - 600017";
-const QUERY = encodeURIComponent("Physiofit Studio, New No. 128, N Usman Road, T. Nagar, Chennai 600017");
-const EMBED = `https://www.google.com/maps?q=${QUERY}&z=16&output=embed`;
-const OPEN = `https://www.google.com/maps/search/?api=1&query=${QUERY}`;
-const DIRECTIONS = `https://www.google.com/maps/dir/?api=1&destination=${QUERY}`;
+const ADDRESS = "New no -128, Usman road, T.nagar, Chennai-600017";
+const EMBED = "https://maps.google.com/maps?q=Physiofit+studio+T+Nagar+Chennai&z=16&output=embed";
+const OPEN = "https://maps.app.goo.gl/iHSJiVBU1xCV8zam6";
+const DIRECTIONS = "https://www.google.com/maps/dir/?api=1&destination=Physiofit+studio+T+Nagar+Chennai";
 
 const Icon = {
   pin: (
@@ -22,6 +21,12 @@ const Icon = {
   ),
   phone: (
     <path d="M5 4h3.5l1.5 4-2 1.5a11 11 0 0 0 6.5 6.5l1.5-2 4 1.5V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" />
+  ),
+  mail: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </>
   ),
   clock: (
     <>
@@ -34,7 +39,8 @@ const Icon = {
 const DETAILS = [
   { icon: "pin", label: "Address", value: ADDRESS, href: OPEN, external: true },
   { icon: "phone", label: "Phone", value: "+91 7200831203", href: "tel:+917200831203" },
-  { icon: "clock", label: "Hours", value: "Open 7 days a week", sub: "10:00 AM – 7:00 PM" },
+  { icon: "mail", label: "Email", value: "physiofitstudio.org@gmail.com", href: "mailto:physiofitstudio.org@gmail.com" },
+  { icon: "clock", label: "Hours", value: "Open 7 days a week", sub: "11:00 AM – 5:00 PM (Sunday by Appointment only)" },
 ];
 
 export default function Visit({ ready = true }) {

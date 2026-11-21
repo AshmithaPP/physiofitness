@@ -8,7 +8,7 @@ import { readClinicNow } from "@/lib/clinicClock";
 export const metadata = {
   title: "Book Appointment · Reserve Your Slot | Physiofit Studio Chennai",
   description:
-    "Reserve your slot at Physiofit Studio in T. Nagar, Chennai. Pick a date, choose a time, and tell us who you are. Open 7 days a week, 10 AM – 7 PM.",
+    "Reserve your slot at Physiofit Studio in T. Nagar, Chennai. Pick a date, choose a time, and tell us who you are. Open 7 days a week, 11 AM – 5 PM (Sunday by Appointment only).",
 };
 
 export default function BookPage() {

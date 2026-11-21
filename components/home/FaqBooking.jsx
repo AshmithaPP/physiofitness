@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
-import { TREATMENTS, EMPTY_FORM, FIELDS, validate, cleanPhone, sendBooking, sendErrorMessage } from "@/lib/booking";
+import { TREATMENTS, GENDERS, EMPTY_FORM, FIELDS, validate, cleanPhone, sendBooking, sendErrorMessage } from "@/lib/booking";
 
 /* --------------------------------------------------------------------------
    FAQ (left) + booking form (right), shown on the home page above "Visit us".
@@ -29,7 +29,7 @@ const FAQS = [
   },
   {
     q: "What are your opening hours?",
-    a: "We're open 7 days a week, from 10:00 AM to 7:00 PM, at New No. 128, N Usman Road, T. Nagar, Chennai.",
+    a: "We're open 7 days a week, from 11:00 AM to 5:00 PM (Sunday by Appointment only), at New no -128, Usman road, T.nagar, Chennai-600017.",
   },
   {
     q: "Can I combine treatments like cupping or foot spa with physiotherapy?",
@@ -170,7 +170,7 @@ export default function FaqBooking({ ready = true }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSendError("");
-    setTouched({ name: true, phone: true, treatment: true, message: true });
+    setTouched({ name: true, phone: true, age: true, gender: true, treatment: true, message: true });
 
     const firstInvalid = FIELDS.find((k) => errors[k]);
     if (firstInvalid) {
@@ -257,7 +257,7 @@ export default function FaqBooking({ ready = true }) {
                   <span className="absolute inset-0 rounded-full bg-highlight animate-pulse-ring" />
                   <span className="relative size-2 rounded-full bg-highlight" />
                 </span>
-                Open today · 10 AM – 7 PM
+                Open today · 11 AM – 5 PM (Sunday by Appointment only)
               </span>
               <h3 data-fb-field className="mt-3 font-display text-2xl font-medium leading-tight tracking-[-0.025em] sm:text-[1.75rem]">
                 Request an appointment
@@ -353,6 +353,59 @@ export default function FaqBooking({ ready = true }) {
                         className={`${INPUT} h-11 pr-4 pl-10 ${shownError("phone") ? INPUT_ERR : ""}`}
                         suppressHydrationWarning
                       />
+                    </div>
+                  </Field>
+                </div>
+              </div>
+
+              {/* Age & Gender */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div data-fb-field>
+                  <Field id="fb-age" label="Age" error={shownError("age")}>
+                    <div className="relative">
+                      <input
+                        id="fb-age"
+                        name="age"
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        max={120}
+                        placeholder="e.g. 28"
+                        value={formData.age ?? ""}
+                        onChange={update("age")}
+                        onBlur={touch("age")}
+                        {...aria("age", "fb-age")}
+                        className={`${INPUT} h-11 px-4 ${shownError("age") ? INPUT_ERR : ""}`}
+                        suppressHydrationWarning
+                      />
+                    </div>
+                  </Field>
+                </div>
+                <div data-fb-field>
+                  <Field id="fb-gender" label="Gender" error={shownError("gender")}>
+                    <div className="relative">
+                      <select
+                        id="fb-gender"
+                        name="gender"
+                        value={formData.gender ?? ""}
+                        onChange={update("gender")}
+                        onBlur={touch("gender")}
+                        {...aria("gender", "fb-gender")}
+                        className={`${INPUT} h-11 appearance-none pr-9 pl-4 cursor-pointer ${formData.gender ? "" : "text-secondary/45"} ${shownError("gender") ? INPUT_ERR : ""}`}
+                        suppressHydrationWarning
+                      >
+                        <option value="" disabled className="bg-primary text-secondary/50">
+                          Select gender
+                        </option>
+                        {GENDERS.map((g) => (
+                          <option key={g} value={g} className="bg-primary text-secondary">
+                            {g}
+                          </option>
+                        ))}
+                      </select>
+                      <svg aria-hidden className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-secondary/50" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 7.5l5 5 5-5" />
+                      </svg>
                     </div>
                   </Field>
                 </div>

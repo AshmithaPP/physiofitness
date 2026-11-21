@@ -5,7 +5,7 @@ import Image from "next/image";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import Magnetic from "@/components/hero/Magnetic";
 
-import { TREATMENTS, EMPTY_FORM, FIELDS, validate, sendBooking, sendErrorMessage } from "@/lib/booking";
+import { TREATMENTS, GENDERS, EMPTY_FORM, FIELDS, validate, sendBooking, sendErrorMessage } from "@/lib/booking";
 
 const INPUT =
   "w-full rounded-lg sm:rounded-xl bg-primary/10 border border-primary/20 text-primary placeholder:text-primary/45 text-xs sm:text-sm focus:outline-none focus:border-primary/60 transition-colors";
@@ -27,8 +27,7 @@ function Field({ id, label, error, children }) {
   );
 }
 
-const MAPS_URL =
-  "https://www.google.com/maps/search/?api=1&query=New+No.+128+N+Usman+Road+T.+Nagar+Chennai+600017";
+const MAPS_URL = "https://maps.app.goo.gl/iHSJiVBU1xCV8zam6";
 
 export default function ContactShowcase() {
   const root = useRef(null);
@@ -128,7 +127,7 @@ export default function ContactShowcase() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSendError("");
-    setTouched({ name: true, phone: true, treatment: true, message: true });
+    setTouched({ name: true, phone: true, age: true, gender: true, treatment: true, message: true });
 
     const firstInvalid = FIELDS.find((k) => errors[k]);
     if (firstInvalid) {
@@ -174,10 +173,10 @@ export default function ContactShowcase() {
                 Studio
               </span>
               <h2 className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-primary leading-tight">
-                New No. 128, N Usman Road
+                New no -128, Usman road
               </h2>
               <p className="text-sm sm:text-base text-primary/80 mt-1 font-light">
-                T. Nagar, Chennai &ndash; 600017
+                T.nagar, Chennai-600017
               </p>
             </div>
 
@@ -206,11 +205,11 @@ export default function ContactShowcase() {
                   Email
                 </span>
                 <a
-                  href="mailto:afrozmeeran13@gmail.com"
+                  href="mailto:physiofitstudio.org@gmail.com"
                   draggable={false}
                   className="font-display text-base sm:text-lg font-medium text-primary hover:underline underline-offset-4 block break-all select-text"
                 >
-                  afrozmeeran13@gmail.com
+                  physiofitstudio.org@gmail.com
                 </a>
                 <p className="text-xs text-primary/70 mt-1 font-light">
                   We usually reply within a few hours
@@ -227,7 +226,10 @@ export default function ContactShowcase() {
                 Open 7 days a week
               </p>
               <p className="text-xs sm:text-sm text-primary/80 mt-0.5 font-light">
-                10:00 AM &ndash; 7:00 PM
+                Timing &ndash; 11AM to 5 PM
+              </p>
+              <p className="text-[0.6875rem] sm:text-xs text-primary/65 mt-0.5 font-light">
+                Sunday by Appointment only
               </p>
             </div>
 
@@ -249,7 +251,7 @@ export default function ContactShowcase() {
               <div className="relative w-full h-[200px] sm:h-[260px] rounded-2xl overflow-hidden shadow-md border border-line-inverse bg-primary">
                 <iframe
                   title="Physiofit Studio Location Map in T. Nagar Chennai"
-                  src="https://maps.google.com/maps?q=128+North+Usman+Road+T+Nagar+Chennai+600017&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  src="https://maps.google.com/maps?q=Physiofit+studio+T+Nagar+Chennai&t=&z=16&ie=UTF8&iwloc=&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -407,6 +409,58 @@ export default function ContactShowcase() {
                           suppressHydrationWarning
                         />
                       </Field>
+
+                      {/* Age & Gender */}
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                        <Field id="contact-age" label="Age" error={shownError("age")}>
+                          <input
+                            id="contact-age"
+                            name="age"
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={120}
+                            required
+                            placeholder="e.g. 28"
+                            value={formData.age ?? ""}
+                            onChange={update("age")}
+                            onBlur={touch("age")}
+                            aria-invalid={!!shownError("age")}
+                            aria-describedby={shownError("age") ? "contact-age-error" : undefined}
+                            className={`${INPUT} h-8 min-[400px]:h-9 sm:h-10 px-3 ${shownError("age") ? INPUT_ERR : ""}`}
+                            suppressHydrationWarning
+                          />
+                        </Field>
+
+                        <Field id="contact-gender" label="Gender" error={shownError("gender")}>
+                          <div className="relative">
+                            <select
+                              id="contact-gender"
+                              name="gender"
+                              required
+                              value={formData.gender ?? ""}
+                              onChange={update("gender")}
+                              onBlur={touch("gender")}
+                              aria-invalid={!!shownError("gender")}
+                              aria-describedby={shownError("gender") ? "contact-gender-error" : undefined}
+                              className={`${INPUT} h-8 min-[400px]:h-9 sm:h-10 appearance-none pl-3 pr-8 cursor-pointer ${formData.gender ? "" : "text-primary/45"} ${shownError("gender") ? INPUT_ERR : ""}`}
+                              suppressHydrationWarning
+                            >
+                              <option value="" disabled className="bg-secondary text-primary/60">
+                                Select
+                              </option>
+                              {GENDERS.map((g) => (
+                                <option key={g} value={g} className="bg-secondary text-primary">
+                                  {g}
+                                </option>
+                              ))}
+                            </select>
+                            <svg aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-primary/70" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M5 7.5l5 5 5-5" />
+                            </svg>
+                          </div>
+                        </Field>
+                      </div>
 
                       {/* Treatment */}
                       <Field id="contact-treatment" label="Treatment" error={shownError("treatment")}>

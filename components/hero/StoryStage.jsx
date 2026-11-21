@@ -377,16 +377,16 @@ export default function StoryStage({ ready }) {
       data-stage-secondary
       className="relative z-10 h-dvh min-h-[100dvh] w-full overflow-hidden bg-secondary text-primary"
     >
-      {/* ================= INTRO: gym photo ================= */}
+      {/* ================= INTRO: physiotherapy studio photo ================= */}
       <div data-intro-bg aria-hidden className="absolute inset-0 z-0 will-change-transform">
         <div data-intro-bg-inner className="absolute inset-0 will-change-transform">
           <Image
-            src="/images/hero/sustain.jpg"
-            alt=""
+            src="/images/hero/hero-intro.jpg"
+            alt="Physiotherapy clinical session at Physiofit Studio"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[63%_50%]"
+            className="object-cover object-center"
           />
         </div>
         {/* brand tint keeps the photo in the green palette, easing off as you walk in */}
@@ -450,16 +450,7 @@ export default function StoryStage({ ready }) {
               </Magnetic>
             </div>
 
-            <dl data-hero-fade className="mt-4 grid w-full max-w-xs grid-cols-3 gap-2 border-t border-line-inverse pt-3 sm:max-w-sm sm:gap-4 sm:pt-4 md:max-w-[30rem] md:mt-7 md:pt-5">
-              {STATS.map((s) => (
-                <div key={s.label} className="flex flex-col-reverse text-center md:text-left">
-                  <dt className="eyebrow mt-1 text-[0.48rem] whitespace-nowrap text-primary/60 sm:text-[0.55rem] md:mt-1.5 md:text-[0.6rem]">{s.label}</dt>
-                  <dd className="font-display text-[clamp(1.2rem,4vw,2.15rem)] font-medium leading-none tracking-[-0.03em]">
-                    {s.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+        
           </div>
         </div>
       </div>
